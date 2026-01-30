@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>118 Mobile Terminal - Professional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-app: #eef1f5;
+            --bg-card: #ffffff;
+            --primary: #0056b3;
+            --text-main: #2c3e50;
+            --border: #dde1e7;
+            
+            /* Status Colors */
+            --status-standby: #7f8c8d;
+            --status-alert: #c0392b;
+            --status-active: #27ae60;
+
+            /* Triage */
+            --tr-green: #2ecc71;
+            --tr-yellow: #f1c40f;
+            --tr-red: #e74c3c;
+            --tr-blue: #3498db;
+            --tr-white: #ffffff;
+        }
+
+        * { box-sizing: border-box; touch-action: manipulation; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- TOP BAR (Status & Connection) --- */
+        .top-bar {
+            background: #1a252f;
+            color: white;
+            padding: 8px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+        .connection-status { display: flex; align-items: center; gap: 6px; }
+        .dot { width: 10px; height: 10px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 5px #2ecc71; }
+        .clock { font-family: 'Roboto Mono', monospace; font-size: 1.1rem; }
+
+        /* --- MISSION HEADER (Dynamic) --- */
+        .mission-header {
+            background: white;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mission-id-box { text-align: left; }
+        .mission-id { font-weight: 800; font-size: 1.2rem; color: var(--primary); }
+        .mission-status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            background-color: var(--status-standby);
+            transition: background 0.3s;
+        }
+
+        /* --- MAIN SCROLL AREA --- */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 Columns Layout */
+            gap: 10px;
+        }
+        @media (max-width: 900px) { .main-content { grid-template-columns: 1fr; } }
+
+        /* --- SECTIONS & CARDS --- */
+        .card {
+            background: var(--bg-card);
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            padding: 12px;
+            margin-bottom: 5px;
+        }
+        .card.full-width { grid-column: span 2; }
+        @media (max-width: 900px) { .card.full-width { grid-column: span 1; } }
+
+        .card-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #7f8c8d;
+            font-weight: 700;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* --- DISPATCH DATA (Read Only Style) --- */
+        .dispatch-data {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--primary);
+        }
+        .data-row { display: flex; gap: 10px; margin-bottom: 8px; }
+        .data-field { flex: 1; }
+        .data-field label { display: block; font-size: 0.7rem; color: #666; margin-bottom: 2px; }
+        .data-field input, .data-field textarea, .data-field select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        /* Campi "ricevuti" dalla centrale */
+        .locked-input { background-color: #e9ecef !important; color: #495057; border-color: #dee2e6; cursor: not-allowed; }
+
+        /* --- VITALS GRID --- */
+        .vitals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .vital-box { text-align: center; }
+        .vital-box label { font-size: 0.7rem; font-weight: bold; display: block; }
+        .vital-box input { text-align: center; font-family: 'Roboto Mono', monospace; font-size: 1.1rem; color: var(--primary); }
+
+        /* --- GCS & TRIAGE --- */
+        .gcs-selector { display: flex; justify-content: space-between; margin-bottom: 5px; background: #f9f9f9; padding: 5px; border-radius: 4px; }
+        .gcs-btn { width: 30px; height: 30px; border: 1px solid #ddd; background: white; border-radius: 3px; font-weight: bold; cursor: pointer; }
+        .gcs-btn.active { background: #34495e; color: white; border-color: #2c3e50; }
+
+        .triage-row { display: flex; gap: 5px; margin-top: 5px; }
+        .triage-btn { flex: 1; padding: 10px; border: none; border-radius: 4px; font-weight: bold; color: #555; cursor: pointer; border: 2px solid transparent; opacity: 0.6; }
+        .triage-btn.active { opacity: 1; transform: scale(1.02); box-shadow: 0 2px 5px rgba(0,0,0,0.2); color: white; }
+        /* Colors defined in vars applied via JS/Classes */
+
+        /* --- BOTTOM BAR (Actions) --- */
+        .bottom-bar {
+            background: white;
+            padding: 10px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-test { background: #e67e22; color: white; }
+        .btn-send { background: var(--primary); color: white; }
+        .btn-pdf { background: #8e44ad; color: white; }
+        .btn-menu { background: #ecf0f1; color: #333; flex: 0 0 50px; }
+
+        /* --- INCOMING CALL OVERLAY --- */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(192, 57, 43, 0.95);
+            z-index: 999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+        .pulse-ring {
+            width: 100px; height: 100px; border-radius: 50%;
+            background: white; opacity: 0.2;
+            animation: pulse-animation 1.5s infinite;
+            position: absolute; z-index: -1;
+        }
+        @keyframes pulse-animation { 0% {transform: scale(1); opacity: 0.5;} 100% {transform: scale(3); opacity: 0;} }
+        
+        .call-card { background: white; color: #333; padding: 25px; border-radius: 8px; width: 90%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .call-code { font-size: 2.5rem; font-weight: 900; margin: 10px 0; display: block; }
+        .btn-accept { width: 100%; padding: 15px; background: #27ae60; color: white; border: none; font-size: 1.2rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 20px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="overlay" id="incomingOverlay">
+        <div class="pulse-ring"></div>
+        <div class="call-card">
+            <h2 style="margin:0; color:#c0392b;">⚠️ MISSIONE 118</h2>
+            <div style="margin: 20px 0; text-align: left; border-top:1px solid #eee; border-bottom:1px solid #eee; padding:15px 0;">
+                <div><strong>CODICE:</strong> <span id="alert_code" class="call-code" style="color:#e74c3c;">ROSSO</span></div>
+                <div><strong>MOTIVO:</strong> <span id="alert_motivo">Dolore Toracico</span></div>
+                <div><strong>INDIRIZZO:</strong> <span id="alert_indirizzo">Via Roma 1, San Marino</span></div>
+            </div>
+            <button class="btn-accept" onclick="acceptMission()">✅ ACCETTA E PARTI</button>
+        </div>
+    </div>
+
+    <div class="top-bar">
+        <div class="connection-status">
+            <div class="dot"></div>
+            <span>CENTRALE OPERATIVA: <strong>CONNESSA</strong></span>
+        </div>
+        <div class="clock" id="clock">00:00:00</div>
+    </div>
+
+    <div class="mission-header">
+        <div class="mission-id-box">
+            <div style="font-size:0.7rem; color:#888;">ID MISSIONE</div>
+            <div class="mission-id" id="mission_id">--</div>
+        </div>
+        <div class="mission-status-badge" id="status_badge">STANDBY</div>
+    </div>
+
+    <div class="main-content" id="formContent">
+        
+        <div class="card full-width dispatch-data">
+            <div class="card-title">
+                <span>📡 DATI RICEVUTI DA CENTRALE</span>
+                <span>AUTO-FILL</span>
+            </div>
+            <div class="data-row">
+                <div class="data-field">
+                    <label>INDIRIZZO / LUOGO</label>
+                    <input type="text" id="in_indirizzo" class="locked-input" readonly>
+                </div>
+            </div>
+            <div class="data-row">
+                <div class="data-field" style="flex:2;">
+                    <label>PAZIENTE (Se noto)</label>
+                    <input type="text" id="in_nome" class="locked-input" readonly>
+                </div>
+                <div class="data-field">
+                    <label>ETÀ</label>
+                    <input type="text" id="in_eta" class="locked-input" readonly>
+                </div>
+                <div class="data-field">
+                    <label>SESSO</label>
+                    <input type="text" id="in_sesso" class="locked-input" readonly>
+                </div>
+            </div>
+            <div class="data-row">
+                <div class="data-field">
+                    <label>MOTIVO CHIAMATA</label>
+                    <input type="text" id="in_motivo" class="locked-input" readonly style="font-weight:bold; color:#c0392b;">
+                </div>
+                <div class="data-field">
+                    <label>CODICE INVIO</label>
+                    <input type="text" id="in_codice" class="locked-input" readonly style="font-weight:bold;">
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">🩺 PARAMETRI VITALI</div>
+            <div class="vitals-grid">
+                <div class="vital-box"><label>FC</label><input type="number" placeholder="---"></div>
+                <div class="vital-box"><label>SpO2</label><input type="number" placeholder="---"></div>
+                <div class="vital-box"><label>FR</label><input type="number" placeholder="---"></div>
+                <div class="vital-box"><label>PA Max</label><input type="number" placeholder="---"></div>
+                <div class="vital-box"><label>PA Min</label><input type="number" placeholder="---"></div>
+                <div class="vital-box"><label>DTX</label><input type="number" placeholder="---"></div>
+            </div>
+            <div style="margin-top:10px;">
+                <label style="font-size:0.7rem; font-weight:bold;">DOLORE (NRS)</label>
+                <input type="range" style="width:100%;" min="0" max="10" oninput="this.nextElementSibling.innerText = this.value">
+                <span style="font-weight:bold; float:right;">0</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">🧠 NEURO & ANAMNESI</div>
+            <div class="gcs-selector" id="gcs_e">
+                <span style="font-size:0.8rem; padding-top:5px;">OCCHI</span>
+                <div style="display:flex; gap:2px;">
+                    <button class="gcs-btn" onclick="setGCS('e',1,this)">1</button>
+                    <button class="gcs-btn" onclick="setGCS('e',2,this)">2</button>
+                    <button class="gcs-btn" onclick="setGCS('e',3,this)">3</button>
+                    <button class="gcs-btn" onclick="setGCS('e',4,this)">4</button>
+                </div>
+            </div>
+            <div class="gcs-selector" id="gcs_v">
+                <span style="font-size:0.8rem; padding-top:5px;">VERBALE</span>
+                <div style="display:flex; gap:2px;">
+                    <button class="gcs-btn" onclick="setGCS('v',1,this)">1</button>
+                    <button class="gcs-btn" onclick="setGCS('v',2,this)">2</button>
+                    <button class="gcs-btn" onclick="setGCS('v',3,this)">3</button>
+                    <button class="gcs-btn" onclick="setGCS('v',4,this)">4</button>
+                    <button class="gcs-btn" onclick="setGCS('v',5,this)">5</button>
+                </div>
+            </div>
+            <div class="gcs-selector" id="gcs_m">
+                <span style="font-size:0.8rem; padding-top:5px;">MOTORIA</span>
+                <div style="display:flex; gap:2px;">
+                    <button class="gcs-btn" onclick="setGCS('m',1,this)">1</button>
+                    <button class="gcs-btn" onclick="setGCS('m',2,this)">2</button>
+                    <button class="gcs-btn" onclick="setGCS('m',3,this)">3</button>
+                    <button class="gcs-btn" onclick="setGCS('m',4,this)">4</button>
+                    <button class="gcs-btn" onclick="setGCS('m',5,this)">5</button>
+                    <button class="gcs-btn" onclick="setGCS('m',6,this)">6</button>
+                </div>
+            </div>
+            <div style="text-align:right; font-weight:bold; margin-bottom:10px;">TOTALE GCS: <span id="gcs_tot">--</span></div>
+            
+            <textarea placeholder="Note Anamnestiche / Esame Obiettivo..." style="width:100%; height:80px; padding:5px; border:1px solid #ccc; border-radius:4px;"></textarea>
+        </div>
+
+        <div class="card full-width">
+            <div class="card-title">🚑 CODICE RIENTRO</div>
+            <div class="triage-row">
+                <button class="triage-btn" style="background:var(--tr-green); color:white;" onclick="selectOutcome(this)">VERDE</button>
+                <button class="triage-btn" style="background:var(--tr-yellow); color:black;" onclick="selectOutcome(this)">GIALLO</button>
+                <button class="triage-btn" style="background:var(--tr-red); color:white;" onclick="selectOutcome(this)">ROSSO</button>
+                <button class="triage-btn" style="background:var(--tr-blue); color:white;" onclick="selectOutcome(this)">BLU</button>
+                <button class="triage-btn" style="background:var(--text-main); color:white;" onclick="selectOutcome(this)">RIFIUTO</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bottom-bar">
+        <button class="action-btn btn-menu" onclick="alert('Menu Impostazioni')">☰</button>
+        <button class="action-btn btn-test" onclick="triggerSim()">🔔 TEST CHIAMATA</button>
+        <button class="action-btn btn-send" onclick="sendData()">📤 INVIA SCHEDA</button>
+    </div>
+
+    <script>
+        // --- 1. OROLOGIO REALE ---
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString('it-IT');
+        }, 1000);
+
+        // --- 2. DATI DI SIMULAZIONE (Database finto centrale) ---
+        const missioniDemo = [
+            { code: "ROSSO", motivo: "Dolore Toracico Sospetto SCA", addr: "Via delle Rose 12, Domagnano", nome: "Mario Rossi", eta: "72", sesso: "M", col: "#e74c3c" },
+            { code: "GIALLO", motivo: "Trauma Cranico non commotivo", addr: "Campo Sportivo, Serravalle", nome: "Luca Bianchi", eta: "24", sesso: "M", col: "#f1c40f" },
+            { code: "ROSSO", motivo: "Dispnea Grave", addr: "Contrada del Collegio, San Marino", nome: "Maria Verdi", eta: "88", sesso: "F", col: "#e74c3c" }
+        ];
+
+        // --- 3. GESTIONE CHIAMATA ---
+        function triggerSim() {
+            // Sceglie una missione a caso
+            const missione = missioniDemo[Math.floor(Math.random() * missioniDemo.length)];
+            
+            // Popola il Pop-up (Alert)
+            document.getElementById('alert_code').innerText = missione.code;
+            document.getElementById('alert_code').style.color = missione.col;
+            document.getElementById('alert_motivo').innerText = missione.motivo;
+            document.getElementById('alert_indirizzo').innerText = missione.addr;
+
+            // Salva i dati temporaneamente per quando accettiamo
+            window.currentMission = missione;
+
+            // Mostra Overlay
+            document.getElementById('incomingOverlay').style.display = 'flex';
+            
+            // Suono (Vibrazione su mobile se supportato)
+            if(navigator.vibrate) navigator.vibrate([500, 200, 500]);
+        }
+
+        function acceptMission() {
+            const m = window.currentMission;
+            const now = new Date();
+
+            // Nascondi Overlay
+            document.getElementById('incomingOverlay').style.display = 'none';
+
+            // Aggiorna Stato
+            const badge = document.getElementById('status_badge');
+            badge.innerText = "IN MISSIONE";
+            badge.style.backgroundColor = "var(--status-active)";
+            
+            // Genera ID Missione
+            document.getElementById('mission_id').innerText = "2024-" + Math.floor(Math.random()*10000);
+
+            // --- POPOLAMENTO SOLO DATI CENTRALE (Campi grigi) ---
+            document.getElementById('in_indirizzo').value = m.addr;
+            document.getElementById('in_nome').value = m.nome;
+            document.getElementById('in_eta').value = m.eta;
+            document.getElementById('in_sesso').value = m.sesso;
+            document.getElementById('in_motivo').value = m.motivo;
+            document.getElementById('in_codice').value = m.code;
+
+            // --- RESET CAMPI OPERATORE (Devono essere vuoti) ---
+            document.querySelectorAll('.vitals-grid input').forEach(el => el.value = '');
+            document.querySelectorAll('.gcs-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('gcs_tot').innerText = "--";
+
+            alert("Missione Presa in Carico alle " + now.toLocaleTimeString() + "\n\nProcedere verso l'obiettivo.");
+        }
+
+        // --- 4. CALCOLATORE GCS ---
+        let gcsScore = {e:0, v:0, m:0};
+        function setGCS(type, val, btn) {
+            gcsScore[type] = val;
+            // UI Update
+            btn.parentElement.querySelectorAll('.gcs-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Calc Total
+            if(gcsScore.e && gcsScore.v && gcsScore.m) {
+                document.getElementById('gcs_tot').innerText = (gcsScore.e + gcsScore.v + gcsScore.m);
+            }
+        }
+
+        // --- 5. TRIAGE SELECT ---
+        function selectOutcome(btn) {
+            document.querySelectorAll('.triage-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        // --- 6. INVIO DATI ---
+        function sendData() {
+            const id = document.getElementById('mission_id').innerText;
+            if(id === "--") {
+                alert("Nessuna missione attiva.");
+                return;
+            }
+            if(confirm("Confermi l'invio della scheda alla centrale?")) {
+                alert("DATI TRASMESSI CON SUCCESSO.\n\nRientro in Standby.");
+                // Reset interfaccia
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
