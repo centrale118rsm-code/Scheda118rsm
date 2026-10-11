@@ -222,6 +222,7 @@ textarea.fld{resize:none;overflow:hidden;padding:0 calc(6 * var(--u));line-heigh
   <button class="btn" type="button" id="bNew" title="Nuova scheda">＋ <span class="tx">Nuova</span></button>
   <button class="btn" type="button" id="bPrev" hidden style="border-color:var(--red);color:var(--red)">↺ <span class="tx">Scheda precedente</span></button>
   <button class="btn" type="button" id="bInstall" title="Installa la scheda come app sul computer" hidden style="border-color:#17a34a;color:#17a34a">⤓ <span class="tx">Installa app</span></button>
+  <button class="btn" type="button" id="bOpenSheet" title="Apri una scheda salvata (file .json) per modificarla"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1"/><path d="M3 7v10a2 2 0 0 0 2 2h12.5a2 2 0 0 0 1.9-1.4L22 11H7.1a2 2 0 0 0-1.9 1.4L3 19"/></svg><span class="tx">Apri scheda</span></button>
   <button class="btn" type="button" id="bArchList" title="Archivio schede" hidden><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="tx">Archivio</span></button>
   <button class="btn" type="button" id="bSet" title="Impostazioni"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></button>
   <div class="zoom" role="group" aria-label="Zoom"><button class="btn" type="button" id="zOut" title="Riduci">−</button><span id="zVal">100%</span><button class="btn" type="button" id="zIn" title="Ingrandisci">+</button></div>
@@ -287,10 +288,12 @@ textarea.fld{resize:none;overflow:hidden;padding:0 calc(6 * var(--u));line-heigh
         <div><label for="t-aut">Autisti</label><textarea id="t-aut"></textarea></div>
         <div><label for="t-med">Medici</label><textarea id="t-med"></textarea></div>
       </div>
+      <div class="msub">App sul computer</div>
+      <div class="mrow"><button class="btn" type="button" id="bDesk">Come mettere l'icona sul desktop</button></div>
       <div class="msub">File della scheda</div>
       <div class="mrow">
         <button class="btn" type="button" id="bSave">⤓ Salva dati su file</button>
-        <button class="btn" type="button" id="bOpen">⤒ Apri dati da file</button>
+        <button class="btn" type="button" id="bOpen">⤒ Apri scheda da file (.json)</button>
         <input type="file" id="fileIn" accept="application/json,.json" hidden>
       </div>
     </div>
@@ -315,6 +318,18 @@ textarea.fld{resize:none;overflow:hidden;padding:0 calc(6 * var(--u));line-heigh
       <div class="fok" id="fineDone" hidden></div>
     </div>
     <div class="mft"><button class="btn pri" type="button" id="fNew" hidden>＋ Nuova scheda</button><span style="margin-left:auto"></span><button class="btn" type="button" data-close>Chiudi</button></div>
+  </div>
+</div>
+
+<div class="mod" id="mDesk" role="dialog" aria-modal="true" aria-labelledby="mDeskT">
+  <div class="mbox" style="max-width:560px">
+    <div class="mhd"><h2 id="mDeskT">Icona sul desktop</h2><button class="btn" type="button" data-close aria-label="Chiudi">✕</button></div>
+    <div class="mbd">
+      <p style="margin:0 0 8px">La Scheda 118 è installata e la trovi nel <b>menu Start</b>. Il browser non sempre mette anche l'icona sul desktop; per aggiungerla:</p>
+      <ol class="steps" id="deskSteps"></ol>
+      <p class="mhint"><b>In alternativa:</b> apri il menu Start, cerca «Scheda 118», poi tasto destro › <b>Apri percorso file</b> e copia il collegamento sul desktop (oppure trascina l'icona dal menu Start al desktop).</p>
+    </div>
+    <div class="mft"><span style="margin-left:auto"></span><button class="btn" type="button" data-close>Ho capito</button></div>
   </div>
 </div>
 
@@ -930,10 +945,26 @@ $('#bSave').addEventListener('click',()=>{
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),3000);
 });
 $('#bOpen').addEventListener('click',()=>$('#fileIn').click());
+// apre una scheda salvata (.json): la sostituisce a quella attuale, pronta da modificare
+function loadSheetText(txt,name){
+  let d;try{d=JSON.parse(txt);}catch(_){d=null;}
+  if(!d||!d.fields){alert('Il file «'+(name||'')+'» non è una scheda salvata da questa app.');return false;}
+  const used=['scheda_n','nome','luogo','sintomo','valutazioni'].some(n=>form.elements[n].value.trim());
+  if(used&&!isArchived()&&!confirm('La scheda aperta ora non è archiviata e verrà sostituita.\nAprire comunque «'+(name||'scheda')+'»?'))return false;
+  apply(d);
+  if(archInfo){lastMod=archInfo.ts;}else{lastMod=Date.now();}
+  store.set(KEY,JSON.stringify(collect()));$('#st').textContent=stText();
+  try{closeMod();}catch(_){}try{barSet(false);}catch(_){}
+  try{fineUI();}catch(_){}
+  window.scrollTo({top:0,behavior:'smooth'});
+  toast('Scheda N° '+(form.elements.scheda_n.value||'—')+' aperta: modificala e premi «Fine scheda» per riarchiviarla',4500);
+  return true;
+}
 $('#fileIn').addEventListener('change',e=>{
   const file=e.target.files&&e.target.files[0];if(!file)return;
   const rd=new FileReader();
-  rd.onload=()=>{try{const d=JSON.parse(rd.result);if(!d||!d.fields)throw 0;apply(d);changed();}catch(_){alert('File non valido: non sembra una scheda salvata da questa pagina.');}};
+  rd.onload=()=>loadSheetText(String(rd.result),file.name);
+  rd.onerror=()=>alert('Impossibile leggere il file.');
   rd.readAsText(file);e.target.value='';
 });
 // zoom
@@ -1213,17 +1244,29 @@ $('#aFind').addEventListener('input',archRender);
 $('#aList').addEventListener('click',async e=>{
   const o=e.target.closest('[data-aopen]'),p=e.target.closest('[data-apdf]');
   if(o){const a=aCache[+o.dataset.aopen];
-    const used=['scheda_n','nome','valutazioni'].some(n=>form.elements[n].value.trim());
-    if(used&&!isArchived()&&!confirm('La scheda attuale non è archiviata e verrà sostituita. Continuare?'))return;
-    apply(a.d);if(!archInfo)archInfo={rel:DIR_JSON+'/'+a.y+'/'+a.m+'/'+a.g+'/'+a.n,ts:Date.now()};lastMod=archInfo.ts;fineUI();
-    store.set(KEY,JSON.stringify(collect()));$('#st').textContent=stText();closeMod();window.scrollTo({top:0,behavior:'smooth'});
-    toast('Scheda N° '+(form.elements.scheda_n.value||'—')+' aperta dall\'archivio',2500);}
+    const d=Object.assign({},a.d);if(!d.archivio)d.archivio={rel:DIR_JSON+'/'+a.y+'/'+a.m+'/'+a.g+'/'+a.n,ts:Date.now()};
+    loadSheetText(JSON.stringify(d),a.n+'.json');}
   if(p){const a=aCache[+p.dataset.apdf];
     try{const pd=await dirPath(await archDir(false),[DIR_PDF,a.y,a.m,a.g],false);const f=await (await pd.getFileHandle(a.n+'.pdf')).getFile(),u=URL.createObjectURL(f),w=window.open(u,'_blank');
       if(!w){const l=document.createElement('a');l.href=u;l.download=a.n+'.pdf';document.body.appendChild(l);l.click();l.remove();}
       setTimeout(()=>URL.revokeObjectURL(u),60000);}catch(_){alert('PDF non trovato per questa scheda.');}}
 });
 $('#bArchList').addEventListener('click',archOpenList);
+$('#bOpenSheet').addEventListener('click',async()=>{
+  if(typeof window.showOpenFilePicker!=='function'){$('#fileIn').click();return;}
+  let start;
+  if(archRoot){try{if(await archPerm(archRoot,true)){try{start=await dirPath(await archDir(false),[DIR_JSON],false);}catch(_){start=archRoot;}}}catch(_){}}
+  try{
+    const opt={id:'scheda118open',multiple:false,excludeAcceptAllOption:false,types:[{description:'Scheda 118 (dati)',accept:{'application/json':['.json']}}]};
+    if(start)opt.startIn=start;
+    const [h]=await window.showOpenFilePicker(opt);
+    const f=await h.getFile();loadSheetText(await f.text(),f.name);
+  }catch(e){if(e&&e.name==='AbortError')return;console.error(e);$('#fileIn').click();}
+});
+// app installata: «Apri con › Scheda 118» su un file .json
+if('launchQueue' in window&&window.launchQueue&&typeof window.launchQueue.setConsumer==='function'){
+  window.launchQueue.setConsumer(async p=>{if(!p||!p.files||!p.files.length)return;try{const f=await p.files[0].getFile();loadSheetText(await f.text(),f.name);}catch(e){console.error(e);}});
+}
 archLoad();
 
 /* ============ AVVIO ============ */
@@ -1241,7 +1284,15 @@ prevUI();fineUI();
 let installEvt=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;$('#bInstall').hidden=false;$('#barTog').classList.add('alert');});
 $('#bInstall').addEventListener('click',async()=>{if(!installEvt)return;installEvt.prompt();try{await installEvt.userChoice;}catch(_){}installEvt=null;$('#bInstall').hidden=true;prevUI();});
-window.addEventListener('appinstalled',()=>{$('#bInstall').hidden=true;prevUI();toast('Scheda 118 installata: trovi l\'icona sul desktop e nel menu Start',4000);});
+window.addEventListener('appinstalled',()=>{$('#bInstall').hidden=true;prevUI();setTimeout(()=>openMod('mDesk'),600);});
+const isEdge=()=>/Edg\//.test(navigator.userAgent);
+function deskHelp(){
+  $('#deskSteps').innerHTML=isEdge()
+    ?'<li>Apri <b>edge://apps</b> nella barra degli indirizzi (o dal menu ⋯ › App › Visualizza app).</li><li>Su <b>Scheda 118</b> premi ⋯ (Altre impostazioni) › <b>Crea collegamento sul desktop</b>.</li>'
+    :'<li>Apri <b>chrome://apps</b> nella barra degli indirizzi.</li><li>Clic destro su <b>Scheda 118</b> › <b>Crea scorciatoie…</b> › spunta <b>Desktop</b> › <b>Crea</b>.</li>';
+}
+$('#bDesk').addEventListener('click',()=>{closeMod();setTimeout(()=>openMod('mDesk'),50);});
+deskHelp();
 if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
 function barSet(open){$('#bar').classList.toggle('open',open);$('#barTog').setAttribute('aria-expanded',open?'true':'false');}
 $('#barTog').addEventListener('click',()=>barSet(!$('#bar').classList.contains('open')));

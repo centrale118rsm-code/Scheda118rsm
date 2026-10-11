@@ -1,6 +1,6 @@
 /* Scheda 118 — service worker: rende l'app installabile e utilizzabile senza rete.
    Conserva solo i file dell'app (mai dati dei pazienti). Prima prova la rete, così gli aggiornamenti su GitHub arrivano subito. */
-const CACHE = 'scheda118-v1';
+const CACHE = 'scheda118-v2';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/icon-180.png'];
 self.addEventListener('install', e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).catch(() => {})); });
 self.addEventListener('activate', e => {
