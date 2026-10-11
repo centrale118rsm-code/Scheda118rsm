@@ -1,0 +1,18 @@
+{
+  "name": "Scheda di Intervento 118",
+  "short_name": "Scheda 118",
+  "description": "Scheda di intervento 118 San Marino compilabile, con archivio nella cartella di rete ISS.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "lang": "it",
+  "background_color": "#eef1f5",
+  "theme_color": "#e30613",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
