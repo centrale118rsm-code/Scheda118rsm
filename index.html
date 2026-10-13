@@ -265,15 +265,16 @@ textarea.fld{resize:none;overflow:hidden;padding:0 calc(6 * var(--u));line-heigh
         <div id="archYes">
           <p style="margin:0 0 6px;font-weight:800" id="archState"></p>
           <ol class="steps">
-            <li>Premi <b>Scegli cartella</b>: il percorso <span class="mono">\\dati.iss.local\Pronto Soccorso\Scheda 118 Digitale</span> viene copiato.</li>
+            <li>Premi <b>Scegli cartella</b>: il percorso <span class="mono">\\dati.iss.local\Pronto Soccorso\118 Scheda Digitale</span> viene copiato.</li>
             <li>Nella finestra di Windows clicca nella barra del percorso in alto, incolla (<b>Ctrl+V</b>) e premi <b>Invio</b>.</li>
-            <li>Premi <b>Seleziona cartella</b> e conferma <b>Consenti modifiche</b>. Se «Scheda 118 Digitale» non esiste ancora, scegli «Pronto Soccorso»: la cartella viene creata in automatico.</li>
+            <li>Premi <b>Seleziona cartella</b> e conferma <b>Consenti modifiche</b>. Se «118 Scheda Digitale» non esiste ancora, scegli «Pronto Soccorso»: la cartella viene creata in automatico.</li>
           </ol>
           <div class="mrow">
             <button class="btn pri" type="button" id="bArchPick">Scegli cartella</button>
-            <input class="min mono" id="archPath" readonly value="\\dati.iss.local\Pronto Soccorso\Scheda 118 Digitale" style="flex:1;min-width:220px" aria-label="Percorso cartella di rete">
+            <input class="min mono" id="archPath" readonly value="\\dati.iss.local\Pronto Soccorso\118 Scheda Digitale" style="flex:1;min-width:220px" aria-label="Percorso cartella di rete">
           </div>
-          <p class="mhint">Con «Fine scheda» il PDF va in <b>Scheda 118 Digitale › Schede PDF › anno › mese › giorno</b> e i dati (per riaprire la scheda) in <b>Scheda 118 Digitale › Dati JSON › anno › mese › giorno</b>. Il nome del file contiene solo numero di scheda e data, mai il nome del paziente.</p>
+          <p class="mhint" style="background:#fff7e0;border:1px solid #e9b949;border-radius:8px;padding:8px 10px"><b>Consigliato:</b> collega la cartella come unità di rete con una lettera, è più affidabile. In Esplora file: <b>Questo PC › Connetti unità di rete</b> › lettera <b>Z:</b> › cartella <span class="mono">\\dati.iss.local\Pronto Soccorso</span> › spunta <b>Riconnetti all'accesso</b> › Fine. Poi qui premi «Scegli cartella» e scegli <b>Z:\118 Scheda Digitale</b>.</p>
+          <p class="mhint">Con «Fine scheda» il PDF va in <b>118 Scheda Digitale › Schede PDF › anno › mese › giorno</b> e i dati (per riaprire la scheda) in <b>118 Scheda Digitale › Dati JSON › anno › mese › giorno</b>. Il nome del file contiene solo numero di scheda e data, mai il nome del paziente.</p>
         </div>
         <p id="archNo" class="mhint" style="margin:0" hidden>Questo browser non permette di salvare in una cartella: apri la scheda con <b>Chrome</b> o <b>Edge</b> sul PC. Qui puoi usare «Salva PDF».</p>
       </div>
@@ -1078,7 +1079,7 @@ $('#bSync').addEventListener('click',async()=>{
 });
 
 /* ============ ARCHIVIO SU CARTELLA DI RETE ISS ============ */
-const ARCH_PATH='\\\\dati.iss.local\\Pronto Soccorso\\Scheda 118 Digitale',ARCH_SUB='Scheda 118 Digitale';
+const ARCH_PATH='\\\\dati.iss.local\\Pronto Soccorso\\118 Scheda Digitale',ARCH_SUB='118 Scheda Digitale';
 const FSA=typeof window.showDirectoryPicker==='function';
 const MESI_N=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
 const idb={p:null,
@@ -1086,7 +1087,7 @@ const idb={p:null,
   async get(k){const db=await this.open();return new Promise((ok,ko)=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>ok(q.result);q.onerror=()=>ko(q.error);});},
   async set(k,v){const db=await this.open();return new Promise((ok,ko)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>ok();t.onerror=()=>ko(t.error);});}};
 let archRoot=null,archPending=false;
-const isSubRoot=()=>!!archRoot&&normS(archRoot.name)===normS(ARCH_SUB);
+const isSubRoot=()=>!!archRoot&&[ARCH_SUB,'Scheda 118 Digitale'].some(x=>normS(archRoot.name)===normS(x));
 const safeN=v=>String(v).replace(/[\\/:*?"<>|]+/g,'-');
 function archUI(){
   $('#bArchList').hidden=!FSA;$('#archYes').hidden=!FSA;$('#archNo').hidden=FSA;
@@ -1113,10 +1114,24 @@ $('#bArchPick').addEventListener('click',async()=>{
     if(!(await archPerm(h,true)))throw Object.assign(new Error('perm'),{code:'perm'});
     archRoot=h;try{await idb.set('archRoot',h);}catch(_){}
     archUI();toast('Cartella impostata: '+(h.name||''),2500);
-    if(archPending){archPending=false;closeMod();setTimeout(()=>fineOpen(false),150);}
+    if(archPending){const m=archPending;archPending=false;closeMod();
+      setTimeout(()=>{if(m==='all'||m==='arch')fineRun(m);else if(m==='list')archOpenList();else if(m==='open')$('#bOpenSheet').click();else fineOpen(false);},150);}
   }catch(e){if(e&&e.name==='AbortError')return;alert(archErr(e));}
 });
-function needSetup(){archPending=true;closeMod();fillSet();openMod('mSet');const c=$('#archCard');c.classList.add('hl');c.scrollIntoView({block:'start'});setTimeout(()=>c.classList.remove('hl'),2500);}
+const STALE=n=>n==='NotFoundError'||n==='NotReadableError'||n==='InvalidStateError';
+async function rootAlive(){
+  try{const it=archRoot.entries();await it.next();return true;}
+  catch(e){if(e&&STALE(e.name))return false;throw e;}
+}
+async function forgetRoot(){archRoot=null;try{await idb.set('archRoot',null);}catch(_){}archUI();}
+// cartella memorizzata non più raggiungibile: proposta di sceglierla di nuovo (e poi si riprende l'operazione)
+async function staleRoot(mode,blob){
+  $('#toast').classList.remove('show');
+  const again=confirm('La cartella di archivio memorizzata non risponde più (NotFoundError).\n\nSuccede se il PC o il browser sono stati riavviati, se la cartella è stata rinominata o se non sei collegato alla rete ISS.\n\nOK = scegli di nuovo la cartella adesso\nAnnulla = scarica intanto il PDF su questo computer');
+  if(again){await forgetRoot();needSetup(mode||'arch');return;}
+  if(blob)downloadBlob(blob,archName().nm+'.pdf');else{busy=false;makePdf();}
+}
+function needSetup(mode){archPending=mode||true;closeMod();fillSet();openMod('mSet');const c=$('#archCard');c.classList.add('hl');c.scrollIntoView({block:'start'});setTimeout(()=>c.classList.remove('hl'),2500);}
 async function archDir(create){
   if(!(await archPerm(archRoot,true)))throw Object.assign(new Error('perm'),{code:'perm'});
   return isSubRoot()?archRoot:archRoot.getDirectoryHandle(ARCH_SUB,{create:!!create});
@@ -1147,13 +1162,15 @@ async function writeF(dir,name,data){
 let lastArch=null;
 const kb=n=>n>=1048576?(n/1048576).toFixed(1).replace('.',',')+' MB':Math.max(1,Math.round(n/1024))+' KB';
 const errTxt=e=>(e&&e.name?e.name:'Errore')+(e&&e.message?': '+e.message:'');
-async function archiveAll(){
+async function archiveAll(mode){
   if(busy)return false;
   if(!FSA){toast('Questo browser non salva in cartella: usa Chrome o Edge',3000);return false;}
-  if(!archRoot){needSetup('arch');return false;}
+  if(!archRoot){needSetup(mode||'arch');return false;}
   busy=true;busyBtns().forEach(b=>b.disabled=true);toast('Archivio la scheda…');
   const prev=archInfo;let blob=null;
   try{
+    if(!(await archPerm(archRoot,true)))throw Object.assign(new Error('perm'),{code:'perm'});
+    if(!(await rootAlive())){busy=false;busyBtns().forEach(b=>b.disabled=false);await staleRoot(mode,null);return false;}
     const base=await archDir(true),{y,m,g,nm}=archName();
     const jd=await dirPath(base,[DIR_JSON,y,m,g],true),pd=await dirPath(base,[DIR_PDF,y,m,g],true);
     const rel=DIR_JSON+'/'+y+'/'+m+'/'+g+'/'+nm,pdfRel=DIR_PDF+'/'+y+'/'+m+'/'+g+'/'+nm+'.pdf';
@@ -1181,8 +1198,9 @@ async function archiveAll(){
     toast('Archiviata: PDF ('+kb(R.pdfSize)+') e dati salvati',3000);
     return true;
   }catch(e){
-    archInfo=prev;$('#toast').classList.remove('show');
-    if(confirm(archErr(e)+'\n('+errTxt(e)+')\n\nVuoi intanto scaricare il PDF su questo computer?')){busy=false;busyBtns().forEach(b=>b.disabled=false);if(blob)downloadBlob(blob,archName().nm+'.pdf');else makePdf();}
+    archInfo=prev;$('#toast').classList.remove('show');busy=false;busyBtns().forEach(b=>b.disabled=false);
+    if(e&&STALE(e.name)){await staleRoot(mode,blob);return false;}
+    if(confirm(archErr(e)+'\n('+errTxt(e)+')\n\nVuoi intanto scaricare il PDF su questo computer?')){if(blob)downloadBlob(blob,archName().nm+'.pdf');else makePdf();}
     return false;
   }finally{busy=false;busyBtns().forEach(b=>b.disabled=false);}
 }
@@ -1230,7 +1248,7 @@ function fineOpen(done){
 async function fineRun(mode){
   if(mode==='print'){closeMod();await doPrint();return;}
   if(mode==='pdf'){await makePdf();return;}
-  const ok=await archiveAll();if(!ok)return;
+  const ok=await archiveAll(mode);if(!ok)return;
   if(mode==='all'){await doPrint();}
   fineOpen(mode==='all'?'print':'arch');
 }
@@ -1244,10 +1262,15 @@ $('#fNew').addEventListener('click',()=>{closeMod();fresh();prevUI&&prevUI();fin
 // elenco archivio
 let aBase=null,aCache=[];
 async function subDirs(h,re){const o=[];for await(const [n,x] of h.entries())if(x.kind==='directory'&&re.test(n))o.push(n);return o.sort().reverse();}
+async function staleRootList(mode){
+  if(confirm('La cartella di archivio memorizzata non risponde più (NotFoundError).\nVuoi sceglierla di nuovo adesso?')){await forgetRoot();needSetup(mode);}
+}
 async function archOpenList(){
   if(!archRoot){needSetup('list');return;}
   const empty=()=>{$('#aYear').innerHTML='';$('#aMonth').innerHTML='';aCache=[];$('#aList').innerHTML='<p class="mhint">L\'archivio è ancora vuoto: la prima «Fine scheda» creerà le cartelle «'+DIR_PDF+'» e «'+DIR_JSON+'».</p>';$('#aInfo').textContent='';openMod('mArch');};
-  try{aBase=await dirPath(await archDir(false),[DIR_JSON],false);}
+  try{if(!(await archPerm(archRoot,true)))throw Object.assign(new Error('perm'),{code:'perm'});
+    if(!(await rootAlive())){await staleRootList('list');return;}
+    aBase=await dirPath(await archDir(false),[DIR_JSON],false);}
   catch(e){if(e&&e.name==='NotFoundError'){empty();return;}alert(archErr(e));return;}
   try{const ys=await subDirs(aBase,/^\d{4}$/);$('#aYear').innerHTML=ys.map(y=>'<option>'+y+'</option>').join('')||'<option value="">—</option>';openMod('mArch');await archYear();}
   catch(e){alert(archErr(e));}
@@ -1298,7 +1321,7 @@ $('#bArchList').addEventListener('click',archOpenList);
 $('#bOpenSheet').addEventListener('click',async()=>{
   if(typeof window.showOpenFilePicker!=='function'){$('#fileIn').click();return;}
   let start;
-  if(archRoot){try{if(await archPerm(archRoot,true)){try{start=await dirPath(await archDir(false),[DIR_JSON],false);}catch(_){start=archRoot;}}}catch(_){}}
+  if(archRoot){try{if(await archPerm(archRoot,true)){if(await rootAlive()){try{start=await dirPath(await archDir(false),[DIR_JSON],false);}catch(_){start=archRoot;}}else{await forgetRoot();toast('La cartella di archivio non risponde: scegline di nuovo una dalle impostazioni',4000);}}}catch(_){}}
   try{
     const opt={id:'scheda118open',multiple:false,excludeAcceptAllOption:false,types:[{description:'Scheda 118 (dati)',accept:{'application/json':['.json']}}]};
     if(start)opt.startIn=start;
