@@ -217,7 +217,7 @@ textarea.fld{resize:none;overflow:hidden;padding:0 calc(6 * var(--u));line-heigh
 
 <div class="bar" id="bar">
   <button class="tog" type="button" id="barTog" aria-expanded="false" aria-controls="bar"><span class="bdg"></span>Menu<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-  <div class="t"><i></i>Scheda di Intervento 118</div>
+  <div class="t"><i></i>Scheda di Intervento 118 <span style="font-weight:600;font-size:11px;color:var(--muted)">v2026.10.13-b</span></div>
   <span class="st" id="st">—</span>
   <button class="btn" type="button" id="bNew" title="Nuova scheda">＋ <span class="tx">Nuova</span></button>
   <button class="btn" type="button" id="bPrev" hidden style="border-color:var(--red);color:var(--red)">↺ <span class="tx">Scheda precedente</span></button>
@@ -278,6 +278,8 @@ textarea.fld{resize:none;overflow:hidden;padding:0 calc(6 * var(--u));line-heigh
         </div>
         <p id="archNo" class="mhint" style="margin:0" hidden>Questo browser non permette di salvare in una cartella: apri la scheda con <b>Chrome</b> o <b>Edge</b> sul PC. Qui puoi usare «Salva PDF».</p>
       </div>
+      <div class="mrow" style="margin-top:10px"><button class="btn" type="button" id="bTestArch">Prova la cartella</button><span class="mhint" style="margin:0">salva un PDF e un JSON di prova e mostra cosa riesce</span></div>
+      <pre id="testOut" class="mono" style="display:none;white-space:pre-wrap;font-size:12.5px;background:#f6f8fa;border:1px solid var(--line);border-radius:8px;padding:10px;margin:8px 0 0"></pre>
       <div class="msub">Nomi per INF, AUT e MED (uno per riga)</div>
       <div class="mrow" style="margin-bottom:10px">
         <button class="btn" type="button" id="bSync">Aggiorna dai programmi turni</button>
@@ -1196,6 +1198,11 @@ async function archiveAll(mode){
     }
     store.set(KEY,JSON.stringify(collect()));$('#st').textContent=stText();fineUI();
     toast('Archiviata: PDF ('+kb(R.pdfSize)+') e dati salvati',3000);
+    setTimeout(async()=>{   // ricontrollo: il PDF è ancora nella cartella dopo qualche secondo?
+      try{const f=await (await pd.getFileHandle(nm+'.pdf')).getFile();
+        if(!f.size)throw Object.assign(new Error('file vuoto'),{name:'Empty'});}
+      catch(e){alert('ATTENZIONE: il PDF era stato salvato ma pochi secondi dopo non è più nella cartella di rete ('+errTxt(e)+').\n\nDi solito è l\'antivirus o un criterio della cartella che rimuove i PDF creati dal browser: va segnalato all\'informatica.\nIntanto puoi usare «Scarica PDF» dalla finestra Fine scheda.');lastArch&&(lastArch.pdfOk=false);}
+    },4000);
     return true;
   }catch(e){
     archInfo=prev;$('#toast').classList.remove('show');busy=false;busyBtns().forEach(b=>b.disabled=false);
@@ -1318,6 +1325,28 @@ $('#aList').addEventListener('click',async e=>{
       setTimeout(()=>URL.revokeObjectURL(u),60000);}catch(_){alert('PDF non trovato per questa scheda.');}}
 });
 $('#bArchList').addEventListener('click',archOpenList);
+$('#bTestArch').addEventListener('click',async()=>{
+  const out=$('#testOut');out.style.display='block';const L=[];const log=t=>{L.push(t);out.textContent=L.join('\n');};
+  log('Versione: v2026.10.13-b  ·  Browser: '+(navigator.userAgentData?navigator.userAgentData.brands.map(b=>b.brand+' '+b.version).filter(x=>!/Not/.test(x)).join(', '):navigator.userAgent));
+  if(!FSA){log('✗ Questo browser non può salvare in cartella (serve Chrome o Edge).');return;}
+  if(!archRoot){log('✗ Nessuna cartella scelta: premi «Scegli cartella».');return;}
+  try{
+    log('Cartella scelta: '+(archRoot.name||'?'));
+    log('Permesso: '+(await archPerm(archRoot,true)?'✓ concesso':'✗ negato'));
+    log('Raggiungibile: '+(await rootAlive()?'✓ sì':'✗ NO (cartella orfana: sceglila di nuovo)'));
+    const base=await archDir(true);log('Cartella archivio: ✓ '+(isSubRoot()?archRoot.name:archRoot.name+' › '+ARCH_SUB));
+    const td=await dirPath(base,['_prova'],true);
+    const tiny=new Blob(['%PDF-1.4\n1 0 obj<</Type/Catalog>>endobj\ntrailer<</Root 1 0 R>>\n%%EOF\n'],{type:'application/pdf'});
+    try{await writeF(td,'prova.json',new Blob(['{"prova":true}'],{type:'application/json'}));log('JSON di prova: ✓ salvato');}catch(e){log('JSON di prova: ✗ '+errTxt(e));}
+    try{await writeF(td,'prova-piccolo.pdf',tiny);log('PDF piccolo: ✓ salvato');}catch(e){log('PDF piccolo: ✗ '+errTxt(e));}
+    log('Creo il PDF vero della scheda…');let big=null;
+    try{big=await pdfBlob();log('PDF scheda creato: ✓ '+kb(big.size));}catch(e){log('PDF scheda: ✗ non creato — '+errTxt(e));}
+    if(big){try{await writeF(td,'prova-scheda.pdf',big);log('PDF scheda: ✓ salvato nella cartella');}catch(e){log('PDF scheda: ✗ '+errTxt(e));}}
+    log('Attendo 4 secondi e ricontrollo…');await new Promise(r=>setTimeout(r,4000));
+    for(const n of ['prova.json','prova-piccolo.pdf','prova-scheda.pdf']){try{const f=await (await td.getFileHandle(n)).getFile();log('  '+n+': ✓ presente ('+kb(f.size)+')');}catch(e){log('  '+n+': ✗ assente ('+errTxt(e)+')');}}
+    try{await base.removeEntry('_prova',{recursive:true});log('File di prova eliminati.');}catch(e){log('(Non riesco a eliminare la cartella _prova: puoi cancellarla a mano.)');}
+  }catch(e){log('✗ Errore: '+errTxt(e));}
+});
 $('#bOpenSheet').addEventListener('click',async()=>{
   if(typeof window.showOpenFilePicker!=='function'){$('#fileIn').click();return;}
   let start;
