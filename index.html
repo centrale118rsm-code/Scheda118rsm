@@ -122,6 +122,45 @@ textarea.fld{resize:none;overflow:hidden;padding:0 calc(6 * var(--u));line-heigh
 .hint{max-width:1560px;margin:0 auto;padding:10px 20px 0;font-size:12.5px;color:var(--muted)}
 #printArea{display:none}
 [hidden]{display:none!important}
+/* finestra mobile delle frasi rapide */
+.fwin{position:fixed;z-index:48;width:min(520px,calc(100vw - 16px));max-height:min(70vh,560px);display:flex;flex-direction:column;background:#fff;color:#15181d;
+  border:1px solid #c9ced6;border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.28);overflow:hidden;font:14px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.fwin.fmin .fbody{display:none}
+.fhead{display:flex;align-items:center;gap:8px;padding:8px 8px 8px 12px;background:#1c1f24;color:#fff;cursor:move;touch-action:none;user-select:none}
+.fhead b{flex:1;font-size:13.5px;letter-spacing:.02em}
+.fhead .grip{opacity:.6;font-size:14px;letter-spacing:-2px}
+.fhead button{appearance:none;border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:8px;width:30px;height:28px;cursor:pointer;font-size:15px;line-height:1}
+.fhead button:hover{background:rgba(255,255,255,.28)}
+.fbody{display:flex;flex-direction:column;min-height:0;flex:1}
+.fsearch{padding:8px 10px;border-bottom:1px solid #e3e7ec}
+.fsearch input{width:100%;border:1px solid #c9ced6;border-radius:9px;padding:7px 10px;font:inherit;background:#f6f8fa}
+.fcols{display:flex;min-height:0;flex:1}
+.fcats{flex:none;width:150px;border-right:1px solid #e3e7ec;overflow:auto;padding:6px;background:#f6f8fa;display:flex;flex-direction:column;gap:3px}
+.fcats button{appearance:none;border:0;background:transparent;text-align:left;padding:9px 10px;border-radius:9px;font:700 13px/1.15 inherit;cursor:pointer;color:#3d4450;display:flex;gap:6px;align-items:center}
+.fcats button i{font-style:normal;font-weight:600;font-size:11px;color:#8a929d;margin-left:auto}
+.fcats button:hover{background:#e9edf2}
+.fcats button.on{background:#e30613;color:#fff}
+.fcats button.on i{color:#ffd2d5}
+.flist{flex:1;overflow:auto;padding:6px;display:flex;flex-direction:column;gap:4px}
+.flist button{appearance:none;border:1px solid transparent;background:#fff;text-align:left;padding:9px 10px;border-radius:9px;font:500 14px/1.3 inherit;cursor:pointer;color:#15181d}
+.flist button:hover{background:#fff4bf;border-color:#f0d36a}
+.flist button:active{background:#ffe680}
+.flist button small{display:block;font-size:11px;color:#8a929d;margin-top:2px}
+.flist .none{color:#8a929d;padding:10px;font-size:13px}
+.ffoot{padding:6px 10px;border-top:1px solid #e3e7ec;font-size:11.5px;color:#8a929d}
+@media (max-width:560px){.fcats{width:112px}.fcats button{font-size:12px;padding:8px}}
+/* area admin */
+.tgl{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.tgl:last-child{border-bottom:0}
+.tgl input{appearance:none;flex:none;width:44px;height:26px;border-radius:999px;background:#c9ced6;position:relative;cursor:pointer;margin:2px 0 0;transition:background .15s}
+.tgl input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .15s}
+.tgl input:checked{background:#17a34a}
+.tgl input:checked::after{left:21px}
+.tgl input:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.tgl b{display:block;font-size:14.5px}
+.tgl span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.admbox{border:1px solid var(--line);border-radius:12px;padding:4px 12px;background:#fff}
+.pwerr{color:var(--red);font-size:13px;min-height:18px;margin-top:6px}
 /* suggerimenti nomi */
 .acarr{appearance:none;border:1px solid #9aa3ae;background:rgba(255,255,255,.92);border-radius:calc(8 * var(--u));cursor:pointer;padding:0;
   display:flex;align-items:center;justify-content:center;z-index:2;color:#15181d}
@@ -194,7 +233,7 @@ textarea.fld{resize:none;overflow:hidden;padding:0 calc(6 * var(--u));line-heigh
 @media print{
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   html,body{background:#fff;margin:0;width:210mm!important;min-width:0!important;overflow:visible!important}
-  .bar,.fab,.toast,.hint,.plabel,.sigclr,.fsbar,.aa,.acarr,.acpop,.mod,.finebtn{display:none!important}
+  .bar,.fab,.toast,.hint,.plabel,.sigclr,.fsbar,.aa,.acarr,.acpop,.mod,.finebtn,.fwin{display:none!important}
   .fld,.cb,.sig{background:transparent!important;box-shadow:none!important}
   .bz:hover{fill:transparent}
   .bz.on{fill:rgba(227,6,19,.45)}
@@ -217,14 +256,14 @@ textarea.fld{resize:none;overflow:hidden;padding:0 calc(6 * var(--u));line-heigh
 
 <div class="bar" id="bar">
   <button class="tog" type="button" id="barTog" aria-expanded="false" aria-controls="bar"><span class="bdg"></span>Menu<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-  <div class="t"><i></i>Scheda di Intervento 118 <span style="font-weight:600;font-size:11px;color:var(--muted)">v2026.10.13-b</span></div>
+  <div class="t"><i></i>Scheda di Intervento 118 <span style="font-weight:600;font-size:11px;color:var(--muted)">v2026.10.13-d</span></div>
   <span class="st" id="st">—</span>
   <button class="btn" type="button" id="bNew" title="Nuova scheda">＋ <span class="tx">Nuova</span></button>
   <button class="btn" type="button" id="bPrev" hidden style="border-color:var(--red);color:var(--red)">↺ <span class="tx">Scheda precedente</span></button>
   <button class="btn" type="button" id="bInstall" title="Installa la scheda come app sul computer" hidden style="border-color:#17a34a;color:#17a34a">⤓ <span class="tx">Installa app</span></button>
   <button class="btn" type="button" id="bOpenSheet" title="Apri una scheda salvata (file .json) per modificarla"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v1"/><path d="M3 7v10a2 2 0 0 0 2 2h12.5a2 2 0 0 0 1.9-1.4L22 11H7.1a2 2 0 0 0-1.9 1.4L3 19"/></svg><span class="tx">Apri scheda</span></button>
   <button class="btn" type="button" id="bArchList" title="Archivio schede" hidden><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="tx">Archivio</span></button>
-  <button class="btn" type="button" id="bSet" title="Impostazioni"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg></button>
+  <button class="btn" type="button" id="bSet" title="Area admin (password)"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span class="tx">Admin</span></button>
   <div class="zoom" role="group" aria-label="Zoom"><button class="btn" type="button" id="zOut" title="Riduci">−</button><span id="zVal">100%</span><button class="btn" type="button" id="zIn" title="Ingrandisci">+</button></div>
   <button class="btn" type="button" id="bPrint" title="Stampa"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg><span class="tx">Stampa</span></button>
   <button class="btn pri" type="button" id="bPdf" title="Scarica PDF"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M12 12v6m-3-3 3 3 3-3"/></svg><span class="tx">Salva PDF</span></button>
@@ -255,11 +294,26 @@ textarea.fld{resize:none;overflow:hidden;padding:0 calc(6 * var(--u));line-heigh
 
 <div id="printArea" aria-hidden="true"></div>
 <div class="acpop" id="acpop" role="listbox"></div>
+<div class="fwin" id="fwin" hidden role="dialog" aria-label="Frasi rapide">
+  <div class="fhead" id="fhead"><span class="grip">⋮⋮</span><b>Frasi rapide</b><button type="button" id="fMin" title="Riduci / espandi" aria-label="Riduci o espandi">–</button><button type="button" id="fClose" title="Chiudi" aria-label="Chiudi">✕</button></div>
+  <div class="fbody">
+    <div class="fsearch"><input id="fFind" type="search" placeholder="Cerca in tutte le frasi…" autocomplete="off" aria-label="Cerca una frase"></div>
+    <div class="fcols"><div class="fcats" id="fCats" role="tablist"></div><div class="flist" id="fList"></div></div>
+    <div class="ffoot">Tocca una frase per inserirla dove si trova il cursore · Alt+1…9 cambia categoria</div>
+  </div>
+</div>
 
 <div class="mod" id="mSet" role="dialog" aria-modal="true" aria-labelledby="mSetT">
   <div class="mbox">
-    <div class="mhd"><h2 id="mSetT">Impostazioni</h2><button class="btn" type="button" data-close aria-label="Chiudi">✕</button></div>
+    <div class="mhd"><h2 id="mSetT">Area admin</h2><button class="btn" type="button" id="bAdmOut" hidden>Esci dall'area admin</button><button class="btn" type="button" data-close aria-label="Chiudi">✕</button></div>
     <div class="mbd">
+      <div id="secAdmTop">
+        <div class="msub">Funzioni</div>
+        <div class="admbox" id="admToggles"></div>
+        <div class="msub">Frasi rapide per categoria</div>
+        <textarea class="min" id="t-frasi" style="min-height:260px;font-family:ui-monospace,Consolas,monospace;font-size:13px;resize:vertical" aria-label="Frasi rapide, una per riga"></textarea>
+        <p class="mhint">Una riga che inizia con <b>#</b> crea una categoria (es. <span class="mono"># Respiro</span>); le righe sotto sono le sue frasi. Una frase che finisce con «:» lascia il cursore dopo i due punti per completarla.</p>
+      </div>
       <div class="msub">Archivio su cartella di rete ISS</div>
       <div class="archcard" id="archCard">
         <div id="archYes">
@@ -280,6 +334,7 @@ textarea.fld{resize:none;overflow:hidden;padding:0 calc(6 * var(--u));line-heigh
       </div>
       <div class="mrow" style="margin-top:10px"><button class="btn" type="button" id="bTestArch">Prova la cartella</button><span class="mhint" style="margin:0">salva un PDF e un JSON di prova e mostra cosa riesce</span></div>
       <pre id="testOut" class="mono" style="display:none;white-space:pre-wrap;font-size:12.5px;background:#f6f8fa;border:1px solid var(--line);border-radius:8px;padding:10px;margin:8px 0 0"></pre>
+      <div id="secAdm">
       <div class="msub">Nomi per INF, AUT e MED (uno per riga)</div>
       <div class="mrow" style="margin-bottom:10px">
         <button class="btn" type="button" id="bSync">Aggiorna dai programmi turni</button>
@@ -299,8 +354,26 @@ textarea.fld{resize:none;overflow:hidden;padding:0 calc(6 * var(--u));line-heigh
         <button class="btn" type="button" id="bOpen">⤒ Apri scheda da file (.json)</button>
         <input type="file" id="fileIn" accept="application/json,.json" hidden>
       </div>
+      <div class="msub">Password dell'area admin</div>
+      <div class="mrow"><input class="min" type="password" id="pwNew" placeholder="Nuova password" autocomplete="new-password" style="width:200px"><input class="min" type="password" id="pwNew2" placeholder="Ripeti" autocomplete="new-password" style="width:200px"><button class="btn" type="button" id="bPwSet">Cambia password</button></div>
+      <div class="msub">Ripristino</div>
+      <div class="mrow"><button class="btn" type="button" id="bCfgReset">Ripristina le impostazioni predefinite</button></div>
+      <p class="mhint">Le impostazioni valgono per questo computer. La password protegge dalle modifiche accidentali, non è una protezione informatica.</p>
+      </div>
     </div>
-    <div class="mft"><span class="mhint" style="margin:0 auto 0 0">Le modifiche ai nomi si salvano subito.</span><button class="btn" type="button" data-close>Chiudi</button></div>
+    <div class="mft"><span class="mhint" id="setFoot" style="margin:0 auto 0 0">Le modifiche si salvano subito.</span><button class="btn" type="button" data-close>Chiudi</button></div>
+  </div>
+</div>
+
+<div class="mod" id="mPw" role="dialog" aria-modal="true" aria-labelledby="mPwT">
+  <div class="mbox" style="max-width:380px">
+    <div class="mhd"><h2 id="mPwT">Area admin</h2><button class="btn" type="button" data-close aria-label="Chiudi">✕</button></div>
+    <form class="mbd" id="pwForm" autocomplete="off">
+      <label for="pwIn" style="display:block;font-size:13px;font-weight:700;margin-bottom:6px">Password</label>
+      <input class="min" type="password" id="pwIn" autocomplete="current-password" style="width:100%">
+      <div class="pwerr" id="pwErr" role="alert"></div>
+      <button class="btn pri" type="submit" style="width:100%;justify-content:center;margin-top:4px">Entra</button>
+    </form>
   </div>
 </div>
 
@@ -566,6 +639,28 @@ const store={
   set(k,v){try{localStorage.setItem(k,v);return true;}catch(e){return false;}},
   del(k){try{localStorage.removeItem(k);}catch(e){}}
 };
+/* ---- impostazioni (area admin) ---- */
+const CFGKEY='scheda118_cfg_v1';
+const FRASI_CAT_DEF=[
+ {nome:'Coscienza',frasi:['Paziente vigile, orientato e collaborante.','Paziente vigile, disorientato nel tempo e nello spazio.','Paziente soporoso, risvegliabile alla chiamata.','Paziente risvegliabile solo allo stimolo doloroso.','Paziente non cosciente.','Paziente agitato, poco collaborante.','Pupille isocoriche e isocicliche, reagenti alla luce.','Pupille anisocoriche: ','Nega perdita di coscienza.','Riferita perdita di coscienza di circa ','Deficit motorio a carico di ','Eloquio disartrico.','Ultima volta visto in benessere alle ore ']},
+ {nome:'Respiro',frasi:['Respiro spontaneo, eupnoico.','Paziente dispnoico.','Paziente tachipnoico.','Utilizzo della muscolatura accessoria.','Murmure vescicolare presente bilateralmente.','Rumori respiratori: ','Tosse produttiva.','SpO₂ in aria ambiente: ','Avviata ossigenoterapia con ','Vie aeree pervie.']},
+ {nome:'Circolo e cute',frasi:['Cute pallida e sudata.','Cute rosea e asciutta.','Cute calda e asciutta.','Cianosi periferica.','Marezzatura cutanea.','Polsi periferici presenti e validi.','Polso radiale non apprezzabile.','Tempo di riempimento capillare < 2 secondi.','Emorragia esterna controllata con compressione.','Edemi declivi.']},
+ {nome:'Dolore',frasi:['Dolore toracico oppressivo, irradiato a ','Nega dolore toracico.','Dolore addominale localizzato a ','Dolore insorto alle ore ','Dolore alla mobilizzazione di ','Dolore riferito NRS ','Nega dolore.','Dolore in riduzione dopo terapia.']},
+ {nome:'Trauma',frasi:['Trovato a terra.','Caduta accidentale da propria altezza.','Caduta dall\'alto da circa ','Incidente stradale: ','Casco indossato.','Cinture di sicurezza allacciate.','Airbag esplosi.','Estricato dai Vigili del Fuoco.','Immobilizzato con collare cervicale e tavola spinale.','Escoriazioni multiple a ','Deformità a carico di ','Ferita lacero-contusa a ','Trauma cranico senza perdita di coscienza.']},
+ {nome:'Anamnesi',frasi:['Anamnesi: ','Terapia domiciliare: ','Nega allergie note.','Allergie: ','In terapia anticoagulante: ','Ipertensione arteriosa.','Diabete mellito in terapia.','Cardiopatia ischemica.','BPCO.','Ultimo pasto alle ore ','Nega patologie di rilievo.']},
+ {nome:'Scena',frasi:['Familiari presenti.','Paziente solo al domicilio.','Forze dell\'ordine presenti.','Vigili del Fuoco presenti.','Trovato in strada.','Scena sicura.','Testimoni presenti: ','Medico curante avvisato.']},
+ {nome:'Trasporto',frasi:['Trasportato in PS in posizione semiseduta.','Trasportato in PS in decubito supino.','Parametri stabili durante il trasporto.','Miglioramento clinico dopo terapia.','Peggioramento durante il trasporto: ','Affidato al personale del PS.','Informato dei rischi, rifiuta il trasporto.','Lasciato al domicilio con i familiari.']}];
+const FRASI_DEF=FRASI_CAT_DEF.flatMap(c=>c.frasi);
+const CFG_DEF={archivio:true,stampaAuto:true,numAuto:true,nuovaAvvio:true,verificaPdf:true,frasi:true,nomiAuto:true,avvisi:true,frasiCat:FRASI_CAT_DEF,pw:null};
+let CFG=JSON.parse(JSON.stringify(CFG_DEF));
+let cfgOld=false;
+try{const c=JSON.parse(store.get(CFGKEY)||'null');if(c&&typeof c==='object'){cfgOld=!Array.isArray(c.frasiCat);CFG=Object.assign(CFG,c);}}catch(_){}
+if(cfgOld||!Array.isArray(CFG.frasiCat)){   // passaggio dalla vecchia lista unica: le frasi personali finiscono in «Mie frasi»
+  CFG.frasiCat=JSON.parse(JSON.stringify(FRASI_CAT_DEF));
+  if(Array.isArray(CFG.frasiList)){const mine=CFG.frasiList.filter(f=>!FRASI_DEF.includes(f)&&!/^(Paziente vigile, orientato e collaborante\.|Paziente non cosciente\.|Paziente dispnoico\.|Nega dolore toracico\.|Forze dell'ordine presenti\.|Trasportato in PS in posizione semiseduta\.|Informato dei rischi, rifiuta il trasporto\.)$/.test(f));if(mine.length)CFG.frasiCat.push({nome:'Mie frasi',frasi:mine});}
+}
+delete CFG.frasiList;
+const saveCfg=()=>store.set(CFGKEY,JSON.stringify(CFG));
 
 /* ============ FIRMA (tratti vettoriali) ============ */
 const sigEl=$('#sig');let strokes=[],cur=null;
@@ -936,7 +1031,7 @@ $('#bPrint').addEventListener('click',doPrint);
 $('#bPdf').addEventListener('click',makePdf);
 
 /* ============ BARRA ============ */
-function fresh(){apply({fields:{data:today(),ora_comp:nowT()}});store.del(KEY);changed();window.scrollTo({top:0,behavior:'smooth'});}
+function fresh(){apply({fields:{data:today(),ora_comp:nowT()}});store.del(KEY);changed();window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>autoNumber(),80);}
 $('#bNew').addEventListener('click',()=>{
   const used=['scheda_n','nome','luogo','sintomo','valutazioni'].some(n=>form.elements[n].value.trim());
   const msg=used&&archRoot&&!isArchived()?'Questa scheda NON è stata archiviata.\nIniziare comunque una nuova scheda? I dati attuali verranno cancellati da questo dispositivo.':'Iniziare una nuova scheda? I dati attuali verranno cancellati da questo dispositivo.';
@@ -1033,9 +1128,9 @@ Object.keys(AC).forEach(k=>{
   place(b,AC[k].arr,W,H);$('#lyF').appendChild(b);
   b.addEventListener('pointerdown',e=>e.preventDefault());
   b.addEventListener('click',()=>{if(acCur===inp&&pop.classList.contains('show'))acClose();else{inp.focus({preventScroll:true});acShow(inp,true);}});
-  inp.addEventListener('input',e=>{if(e.isTrusted)acShow(inp,false);});
+  inp.addEventListener('input',e=>{if(e.isTrusted&&CFG.nomiAuto)acShow(inp,false);});
   inp.addEventListener('keydown',e=>{
-    if(!pop.classList.contains('show')||acCur!==inp){if(e.key==='ArrowDown'){acShow(inp,true);e.preventDefault();}return;}
+    if(!pop.classList.contains('show')||acCur!==inp){if(e.key==='ArrowDown'&&CFG.nomiAuto){acShow(inp,true);e.preventDefault();}return;}
     if(e.key==='ArrowDown'){acAct=Math.min(acItems.length-1,acAct+1);acMark();e.preventDefault();}
     else if(e.key==='ArrowUp'){acAct=Math.max(0,acAct-1);acMark();e.preventDefault();}
     else if(e.key==='Enter'){if(acAct>=0){acPick(acAct);e.preventDefault();}}
@@ -1058,7 +1153,7 @@ function fillSet(){
   $('#t-inf').value=sortN(NOMI.inf).join('\n');$('#t-aut').value=sortN(NOMI.aut).join('\n');$('#t-med').value=sortN(NOMI.med).join('\n');
   $('#syncInfo').textContent=NOMI.sync?'Aggiornati il '+new Date(NOMI.sync).toLocaleString('it-IT',{dateStyle:'short',timeStyle:'short'}):'Elenchi dai programmi turni (ottobre 2026)';
 }
-$('#bSet').addEventListener('click',()=>{fillSet();openMod('mSet');});
+$('#bSet').addEventListener('click',()=>{if(adminOn){showSet(true);return;}$('#pwErr').textContent='';openMod('mPw');setTimeout(()=>$('#pwIn').focus(),60);});
 [['t-inf','inf'],['t-aut','aut'],['t-med','med']].forEach(([id,k])=>$('#'+id).addEventListener('input',e=>{NOMI[k]=uniqN(e.target.value.split('\n'));saveNomi();}));
 $('#bReset').addEventListener('click',()=>{if(!confirm('Ripristinare gli elenchi predefiniti di infermieri, autisti e medici?'))return;NOMI.inf=DEF_INF.slice();NOMI.aut=DEF_AUT.slice();NOMI.med=uniqN(DEF_MED.concat(NOMI.med.filter(x=>!DEF_MED.includes(x))));NOMI.sync=null;saveNomi();fillSet();});
 const XL={inf:'https://raw.githubusercontent.com/centrale118rsm-code/Turni-Infermieri-2026/main/infermieri.xlsx',aut:'https://raw.githubusercontent.com/centrale118rsm-code/Turni-Autisti-2026-Rsm/main/turni.xlsx'};
@@ -1092,7 +1187,7 @@ let archRoot=null,archPending=false;
 const isSubRoot=()=>!!archRoot&&[ARCH_SUB,'Scheda 118 Digitale'].some(x=>normS(archRoot.name)===normS(x));
 const safeN=v=>String(v).replace(/[\\/:*?"<>|]+/g,'-');
 function archUI(){
-  $('#bArchList').hidden=!FSA;$('#archYes').hidden=!FSA;$('#archNo').hidden=FSA;
+  $('#bArchList').hidden=!FSA||!CFG.archivio;$('#archYes').hidden=!FSA;$('#archNo').hidden=FSA;
   $('#archCard').classList.toggle('ok',!!archRoot);
   $('#archState').textContent=archRoot?'Cartella archivio: '+(isSubRoot()?'… › ':(archRoot.name||'cartella scelta')+' › ')+ARCH_SUB:'Cartella archivio non ancora scelta';
   $('#bArchPick').textContent=archRoot?'Cambia cartella':'Scegli cartella';
@@ -1133,7 +1228,7 @@ async function staleRoot(mode,blob){
   if(again){await forgetRoot();needSetup(mode||'arch');return;}
   if(blob)downloadBlob(blob,archName().nm+'.pdf');else{busy=false;makePdf();}
 }
-function needSetup(mode){archPending=mode||true;closeMod();fillSet();openMod('mSet');const c=$('#archCard');c.classList.add('hl');c.scrollIntoView({block:'start'});setTimeout(()=>c.classList.remove('hl'),2500);}
+function needSetup(mode){archPending=mode||true;closeMod();showSet(adminOn);const c=$('#archCard');c.classList.add('hl');c.scrollIntoView({block:'start'});setTimeout(()=>c.classList.remove('hl'),2500);}
 async function archDir(create){
   if(!(await archPerm(archRoot,true)))throw Object.assign(new Error('perm'),{code:'perm'});
   return isSubRoot()?archRoot:archRoot.getDirectoryHandle(ARCH_SUB,{create:!!create});
@@ -1198,7 +1293,8 @@ async function archiveAll(mode){
     }
     store.set(KEY,JSON.stringify(collect()));$('#st').textContent=stText();fineUI();
     toast('Archiviata: PDF ('+kb(R.pdfSize)+') e dati salvati',3000);
-    setTimeout(async()=>{   // ricontrollo: il PDF è ancora nella cartella dopo qualche secondo?
+    updateLastNum(base).catch(()=>{});
+    if(CFG.verificaPdf)setTimeout(async()=>{   // ricontrollo: il PDF è ancora nella cartella dopo qualche secondo?
       try{const f=await (await pd.getFileHandle(nm+'.pdf')).getFile();
         if(!f.size)throw Object.assign(new Error('file vuoto'),{name:'Empty'});}
       catch(e){alert('ATTENZIONE: il PDF era stato salvato ma pochi secondi dopo non è più nella cartella di rete ('+errTxt(e)+').\n\nDi solito è l\'antivirus o un criterio della cartella che rimuove i PDF creati dal browser: va segnalato all\'informatica.\nIntanto puoi usare «Scarica PDF» dalla finestra Fine scheda.');lastArch&&(lastArch.pdfOk=false);}
@@ -1228,21 +1324,25 @@ function missing(){
   if(rv2('rientro')==='rifiuto'&&!strokes.length)out.push('Firma per il rifiuto');
   return out;
 }
+const archOn=()=>FSA&&CFG.archivio;
 function fineUI(){
   const ok=isArchived(),b=$('#bFine');
   b.classList.toggle('done',ok);
   $('#fineLbl').textContent=ok?'Scheda archiviata':'Fine scheda';
-  $('#fineSub').textContent=ok?'Tocca per ristampare':(FSA?'Archivia e stampa':'Stampa');
+  $('#fineSub').textContent=ok?'Tocca per ristampare':(archOn()?(CFG.stampaAuto?'Archivia e stampa':'Archivia'):'Stampa');
 }
 function fineOpen(done){
-  const mi=missing();
+  const mi=CFG.avvisi?missing():[];
   $('#fineWarn').innerHTML=!done&&mi.length?'<div class="fwarn"><b>Mancano ancora:</b><ul>'+mi.map(x=>'<li>'+escH(x)+'</li>').join('')+'</ul>Puoi completarle ora oppure procedere comunque.</div>':'';
   const {y,m,g,nm}=archName();
-  $('#finePath').innerHTML=FSA?(archRoot?'PDF: <b>'+escH(ARCH_SUB+' › '+DIR_PDF+' › '+y+' › '+m+' › '+g)+'</b><br>Dati: <b>'+escH(ARCH_SUB+' › '+DIR_JSON+' › '+y+' › '+m+' › '+g)+'</b><br>File: <b>'+escH(nm)+'</b>'
+  $('#finePath').innerHTML=!CFG.archivio?'L\'archiviazione nella cartella di rete è disattivata dall\'area admin: puoi stampare o scaricare il PDF.':FSA?(archRoot?'PDF: <b>'+escH(ARCH_SUB+' › '+DIR_PDF+' › '+y+' › '+m+' › '+g)+'</b><br>Dati: <b>'+escH(ARCH_SUB+' › '+DIR_JSON+' › '+y+' › '+m+' › '+g)+'</b><br>File: <b>'+escH(nm)+'</b>'
       :'La prima volta ti chiederò di scegliere la cartella <b>'+escH(ARCH_PATH)+'</b>.')
     :'Questo browser non può salvare nella cartella di rete: usa Chrome o Edge sul PC. Qui puoi stampare o scaricare il PDF.';
-  $('#fAll').hidden=!FSA;$('#fArch').hidden=!FSA;
-  $('#fAllLbl').textContent=isArchived()?'Archivia di nuovo e stampa':'Archivia e stampa';
+  $('#fAll').hidden=!archOn();$('#fArch').hidden=!archOn();
+  const again=isArchived()?' di nuovo':'';
+  $('#fAll').dataset.mode=CFG.stampaAuto?'all':'arch';$('#fArch').dataset.mode=CFG.stampaAuto?'arch':'all';
+  $('#fAllLbl').textContent=CFG.stampaAuto?'Archivia'+again+' e stampa':'Archivia'+again;
+  $('#fArch').textContent=CFG.stampaAuto?'Solo archivia':'Archivia e stampa';
   $('#fineDone').hidden=!done;$('#fNew').hidden=!done&&!isArchived();
   if(done){const L=lastArch;
     $('#fineDone').innerHTML='✓ <b>Scheda archiviata</b>'+(done==='print'?' e inviata alla stampa':'')+'.'+
@@ -1260,8 +1360,8 @@ async function fineRun(mode){
   fineOpen(mode==='all'?'print':'arch');
 }
 $('#bFine').addEventListener('click',()=>fineOpen(false));
-$('#fAll').addEventListener('click',()=>fineRun('all'));
-$('#fArch').addEventListener('click',()=>fineRun('arch'));
+$('#fAll').addEventListener('click',e=>fineRun(e.currentTarget.dataset.mode||'all'));
+$('#fArch').addEventListener('click',e=>fineRun(e.currentTarget.dataset.mode||'arch'));
 $('#fPrintOnly').addEventListener('click',()=>fineRun('print'));
 $('#fPdfOnly').addEventListener('click',()=>fineRun('pdf'));
 $('#fNew').addEventListener('click',()=>{closeMod();fresh();prevUI&&prevUI();fineUI();});
@@ -1327,7 +1427,7 @@ $('#aList').addEventListener('click',async e=>{
 $('#bArchList').addEventListener('click',archOpenList);
 $('#bTestArch').addEventListener('click',async()=>{
   const out=$('#testOut');out.style.display='block';const L=[];const log=t=>{L.push(t);out.textContent=L.join('\n');};
-  log('Versione: v2026.10.13-b  ·  Browser: '+(navigator.userAgentData?navigator.userAgentData.brands.map(b=>b.brand+' '+b.version).filter(x=>!/Not/.test(x)).join(', '):navigator.userAgent));
+  log('Versione: v2026.10.13-d  ·  Browser: '+(navigator.userAgentData?navigator.userAgentData.brands.map(b=>b.brand+' '+b.version).filter(x=>!/Not/.test(x)).join(', '):navigator.userAgent));
   if(!FSA){log('✗ Questo browser non può salvare in cartella (serve Chrome o Edge).');return;}
   if(!archRoot){log('✗ Nessuna cartella scelta: premi «Scegli cartella».');return;}
   try{
@@ -1362,7 +1462,158 @@ $('#bOpenSheet').addEventListener('click',async()=>{
 if('launchQueue' in window&&window.launchQueue&&typeof window.launchQueue.setConsumer==='function'){
   window.launchQueue.setConsumer(async p=>{if(!p||!p.files||!p.files.length)return;try{const f=await p.files[0].getFile();loadSheetText(await f.text(),f.name);}catch(e){console.error(e);}});
 }
-archLoad();
+const archReady=archLoad();
+
+/* ---- numero scheda automatico: legge l'ultimo numero archiviato e propone il successivo ---- */
+const LKEY='scheda118_ultimo_num',IDX='ultimo-numero.json';
+const numOf=v=>{const n=parseInt(String(v||'').replace(/\D/g,''),10);return isFinite(n)&&n>0?n:0;};
+async function nextNumber(){
+  let best=numOf(store.get(LKEY));
+  try{await archReady;}catch(_){}
+  if(archOn()&&archRoot){
+    try{
+      const ok=typeof archRoot.queryPermission!=='function'||(await archRoot.queryPermission({mode:'readwrite'}))==='granted';
+      if(ok&&await rootAlive()){const base=await archDir(false);const f=await (await base.getFileHandle(IDX)).getFile();best=Math.max(best,numOf(JSON.parse(await f.text()).ultimo));}
+    }catch(_){}
+  }
+  return best?best+1:0;
+}
+async function autoNumber(){
+  if(!CFG.numAuto)return;
+  const el=form.elements.scheda_n;if(el.value.trim())return;
+  const n=await nextNumber();
+  if(n&&!el.value.trim()){el.value=String(n);el.dispatchEvent(new Event('input',{bubbles:true}));toast('N° scheda proposto: '+n+' (modificabile)',2600);}
+}
+async function updateLastNum(base){
+  const n=numOf(form.elements.scheda_n.value);if(!n)return;
+  if(n>numOf(store.get(LKEY)))store.set(LKEY,String(n));
+  let ex=0;try{const f=await (await base.getFileHandle(IDX)).getFile();ex=numOf(JSON.parse(await f.text()).ultimo);}catch(_){}
+  if(n>ex)await writeF(base,IDX,new Blob([JSON.stringify({ultimo:n,aggiornato:new Date().toISOString()})],{type:'application/json'}));
+}
+
+/* ---- frasi rapide: finestra mobile con categorie ---- */
+const fwin=$('#fwin'),FPOS='scheda118_frasi_pos';let fCat=0,fClosedByUser=false,lastTA=VAL,caret={};
+const fCats=()=>CFG.frasiCat.filter(c=>c&&c.frasi&&c.frasi.length);
+function remember(t){lastTA=t;caret[t.name]=[t.selectionStart,t.selectionEnd];}
+[VAL,VC].forEach(t=>['keyup','click','select','input','blur'].forEach(ev=>t.addEventListener(ev,()=>remember(t))));
+function fwinRender(){
+  const cats=fCats();if(fCat>=cats.length)fCat=0;
+  $('#fCats').innerHTML=cats.map((c,i)=>'<button type="button" role="tab" data-ci="'+i+'"'+(i===fCat?' class="on" aria-selected="true"':' aria-selected="false"')+'>'+escH(c.nome)+'<i>'+(i<9?(i+1):'')+'</i></button>').join('');
+  const q=normS($('#fFind').value);let items;
+  if(q){items=[];cats.forEach(c=>c.frasi.forEach(f=>{if(normS(f).includes(q))items.push([f,c.nome]);}));}
+  else items=(cats[fCat]?cats[fCat].frasi:[]).map(f=>[f,'']);
+  $('#fList').innerHTML=items.length?items.map(([f,c],i)=>'<button type="button" data-ft="'+escH(f)+'">'+escH(f.trim().replace(/:\s*$/,': …'))+(c?'<small>'+escH(c)+'</small>':'')+'</button>').join(''):'<div class="none">Nessuna frase'+(q?' trovata.':' in questa categoria.')+'</div>';
+}
+function fwinPlace(){
+  let pos=null;try{pos=JSON.parse(store.get(FPOS)||'null');}catch(_){}
+  const w=fwin.offsetWidth||520,h=fwin.offsetHeight||420;
+  if(!pos){const r=VAL.getBoundingClientRect();pos={x:Math.min(window.innerWidth-w-12,Math.max(8,r.right+14)),y:Math.max(60,Math.min(window.innerHeight-h-12,r.top))};}
+  pos.x=Math.max(4,Math.min(window.innerWidth-Math.min(w,window.innerWidth)-4,pos.x));pos.y=Math.max(4,Math.min(window.innerHeight-48,pos.y));
+  fwin.style.left=pos.x+'px';fwin.style.top=pos.y+'px';
+}
+function fwinShow(on){
+  const show=on&&CFG.frasi&&fCats().length>0;
+  if(show&&fwin.hidden){fwin.hidden=false;fwinRender();fwinPlace();}
+  else if(!show)fwin.hidden=true;
+}
+// si apre toccando la descrizione dell'intervento
+[VAL,VC].forEach(t=>{
+  t.addEventListener('pointerdown',()=>{fClosedByUser=false;setTimeout(()=>fwinShow(true),0);});
+  t.addEventListener('focus',()=>{if(!fClosedByUser)fwinShow(true);});
+});
+// si chiude quando si passa a un altro campo della scheda
+document.addEventListener('focusin',e=>{const t=e.target;if(t===VAL||t===VC||fwin.contains(t))return;if(t.closest&&t.closest('#pages'))fwinShow(false);});
+$('#fClose').addEventListener('click',()=>{fClosedByUser=true;fwinShow(false);(caret[lastTA.name]?lastTA:VAL).focus({preventScroll:true});});
+$('#fMin').addEventListener('click',()=>{fwin.classList.toggle('fmin');$('#fMin').textContent=fwin.classList.contains('fmin')?'▢':'–';});
+// i tocchi nella finestra non tolgono il cursore dalla descrizione (tranne la ricerca)
+fwin.addEventListener('mousedown',e=>{if(!e.target.closest('#fFind'))e.preventDefault();});
+$('#fCats').addEventListener('click',e=>{const b=e.target.closest('[data-ci]');if(!b)return;fCat=+b.dataset.ci;$('#fFind').value='';fwinRender();});
+$('#fCats').addEventListener('pointerenter',()=>{},true);
+$('#fFind').addEventListener('input',fwinRender);
+$('#fFind').addEventListener('keydown',e=>{if(e.key==='Escape'){$('#fFind').value='';fwinRender();(lastTA||VAL).focus();}if(e.key==='Enter'){const b=$('#fList [data-ft]');if(b){e.preventDefault();insertFrase(b.dataset.ft);}}});
+$('#fList').addEventListener('click',e=>{const b=e.target.closest('[data-ft]');if(b)insertFrase(b.dataset.ft);});
+// Alt+1…9: cambio rapido di categoria mentre si scrive
+document.addEventListener('keydown',e=>{if(fwin.hidden||!e.altKey||e.ctrlKey||e.metaKey)return;const n=parseInt(e.key,10);if(n>=1&&n<=9&&n<=fCats().length){e.preventDefault();fCat=n-1;$('#fFind').value='';fwinRender();}});
+// trascinamento dalla barra del titolo
+(function(){
+  const hd=$('#fhead');let sx=0,sy=0,ox=0,oy=0,drag=false;
+  hd.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;drag=true;sx=e.clientX;sy=e.clientY;ox=fwin.offsetLeft;oy=fwin.offsetTop;try{hd.setPointerCapture(e.pointerId);}catch(_){}e.preventDefault();});
+  hd.addEventListener('pointermove',e=>{if(!drag)return;const x=Math.max(4-fwin.offsetWidth+80,Math.min(window.innerWidth-80,ox+e.clientX-sx)),y=Math.max(4,Math.min(window.innerHeight-40,oy+e.clientY-sy));fwin.style.left=x+'px';fwin.style.top=y+'px';});
+  const end=()=>{if(!drag)return;drag=false;store.set(FPOS,JSON.stringify({x:fwin.offsetLeft,y:fwin.offsetTop}));};
+  hd.addEventListener('pointerup',end);hd.addEventListener('pointercancel',end);
+})();
+window.addEventListener('resize',()=>{if(!fwin.hidden)fwinPlace();});
+function insertFrase(t){
+  if(!t)return;
+  const ta=lastTA||VAL;ta.focus({preventScroll:true});
+  const c=caret[ta.name]||[ta.value.length,ta.value.length];
+  const a=Math.min(c[0],ta.value.length),b=Math.min(c[1],ta.value.length),before=ta.value.slice(0,a),after=ta.value.slice(b);
+  let ins=t.trim().endsWith(':')?t.trim()+' ':(/\s$/.test(t)?t.replace(/\s+$/,' '):t.trim());
+  if(before&&!/\s$/.test(before))ins=' '+ins;
+  if(after&&!/^\s/.test(after)&&!/\s$/.test(ins))ins+=' ';
+  ta.value=before+ins+after;const pos=(before+ins).length;
+  try{ta.setSelectionRange(pos,pos);}catch(_){}
+  ta.dispatchEvent(new Event('input',{bubbles:true}));
+  // dopo il passaggio sul retro il testo può essere passato all'altra casella: il cursore va dove è finito il testo
+  const tgt=document.activeElement===VC||document.activeElement===VAL?document.activeElement:ta;remember(tgt);
+}
+function frasiRender(){if(!fwin.hidden)fwinRender();}
+function frasiShow(on){fwinShow(on);}
+frasiRender();
+
+/* ---- area admin ---- */
+let adminOn=false;
+async function sha(t){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}catch(_){return 'plain:'+t;}}
+async function pwOk(t){const h=await sha(t);if(CFG.pw)return h===CFG.pw;return t==='cord';}
+const TOG=[
+  ['archivio','Archiviazione nella cartella di rete','Con «Fine scheda» salva PDF e dati in 118 Scheda Digitale. Se spenta: solo stampa e PDF.'],
+  ['stampaAuto','Stampa insieme all\'archiviazione','Il pulsante principale di Fine scheda archivia e apre subito la stampa. Se spenta: archivia soltanto.'],
+  ['numAuto','Numero scheda automatico','Nella nuova scheda propone il numero successivo all\'ultimo archiviato (resta modificabile).'],
+  ['nuovaAvvio','Apri sempre una scheda nuova','All\'avvio parte da una scheda vuota. Se spenta: riapre la scheda lasciata in corso.'],
+  ['avvisi','Avviso campi mancanti','Fine scheda elenca numero, data, Falco, equipaggio e codici non compilati.'],
+  ['verificaPdf','Ricontrollo del PDF dopo il salvataggio','Pochi secondi dopo verifica che il PDF sia ancora nella cartella di rete.'],
+  ['nomiAuto','Suggerimenti nomi e frecce','Elenco nomi per INF, AUT, MED e Falco mentre scrivi.'],
+  ['frasi','Frasi rapide','Barra di frasi pronte mentre scrivi le Valutazioni sul posto.']];
+function fillAdmin(){
+  $('#admToggles').innerHTML=TOG.map(([k,l,d])=>'<label class="tgl"><input type="checkbox" data-cfg="'+k+'"'+(CFG[k]?' checked':'')+'><span style="margin:0"><b>'+escH(l)+'</b><span>'+escH(d)+'</span></span></label>').join('');
+  $('#t-frasi').value=CFG.frasiCat.map(c=>'# '+c.nome+'\n'+c.frasi.join('\n')).join('\n\n');
+}
+function applyCfg(){
+  saveCfg();archUI();fineUI();frasiRender();
+  $$('.acarr').forEach(b=>b.hidden=!CFG.nomiAuto);if(!CFG.nomiAuto)acClose();
+  if(!CFG.frasi)frasiShow(false);
+}
+$('#admToggles').addEventListener('change',e=>{const c=e.target.closest('[data-cfg]');if(!c)return;CFG[c.dataset.cfg]=c.checked;applyCfg();toast('Impostazione salvata',1400);});
+$('#t-frasi').addEventListener('input',e=>{
+  const cats=[];let cur=null;
+  e.target.value.split('\n').forEach(l=>{const t=l.replace(/\s+$/,'');if(!t.trim())return;
+    const m=t.match(/^\s*#\s*(.+)$/);if(m){cur={nome:m[1].trim(),frasi:[]};cats.push(cur);return;}
+    if(!cur){cur={nome:'Generali',frasi:[]};cats.push(cur);}cur.frasi.push(t.replace(/^\s+/,'')+(/:\s*$/.test(t)?'':''));});
+  CFG.frasiCat=cats;applyCfg();
+});
+function showSet(admin){
+  $('#secAdmTop').hidden=!admin;$('#secAdm').hidden=!admin;$('#bAdmOut').hidden=!admin;
+  $('#mSetT').textContent=admin?'Area admin':'Cartella di archivio';
+  $('#setFoot').textContent=admin?'Le modifiche si salvano subito.':'Per le altre impostazioni serve l\'area admin.';
+  fillSet();if(admin)fillAdmin();openMod('mSet');
+}
+$('#pwForm').addEventListener('submit',async e=>{
+  e.preventDefault();const v=$('#pwIn').value;
+  if(await pwOk(v)){adminOn=true;$('#pwIn').value='';$('#pwErr').textContent='';closeMod();setTimeout(()=>showSet(true),60);}
+  else{$('#pwErr').textContent='Password errata.';$('#pwIn').select();}
+});
+$('#bAdmOut').addEventListener('click',()=>{adminOn=false;closeMod();toast('Uscito dall\'area admin',1800);});
+$('#bPwSet').addEventListener('click',async()=>{
+  const a=$('#pwNew').value,b=$('#pwNew2').value;
+  if(a.length<3){alert('La password deve avere almeno 3 caratteri.');return;}
+  if(a!==b){alert('Le due password non coincidono.');return;}
+  CFG.pw=await sha(a);saveCfg();$('#pwNew').value=$('#pwNew2').value='';toast('Password cambiata',2000);
+});
+$('#bCfgReset').addEventListener('click',()=>{
+  if(!confirm('Ripristinare tutte le funzioni e le frasi rapide predefinite?\n(La password resta quella attuale.)'))return;
+  const pw=CFG.pw;CFG=JSON.parse(JSON.stringify(CFG_DEF));CFG.pw=pw;applyCfg();fillAdmin();toast('Impostazioni predefinite ripristinate',2200);
+});
+applyCfg();
 
 /* ============ AVVIO ============ */
 let draft=null;try{draft=JSON.parse(store.get(KEY)||'null');}catch(_){draft=null;}
@@ -1370,8 +1621,8 @@ let draft=null;try{draft=JSON.parse(store.get(KEY)||'null');}catch(_){draft=null
 const PKEY='scheda118_precedente_v1';
 const hasData=d=>!!(d&&d.fields&&['scheda_n','nome','luogo','sintomo','valutazioni'].some(n=>String(d.fields[n]||'').trim()));
 const wasArch=d=>!!(d&&d.archivio&&d.archivio.ts>=(d.mod||0));
-if(hasData(draft)&&!wasArch(draft))store.set(PKEY,JSON.stringify(draft));else store.del(PKEY);
-fresh();
+if(!CFG.nuovaAvvio&&draft&&draft.fields&&hasData(draft)){store.del(PKEY);apply(draft);$('#st').textContent=isArchived()?stText():'Bozza ripristinata';}
+else{if(hasData(draft)&&!wasArch(draft))store.set(PKEY,JSON.stringify(draft));else store.del(PKEY);fresh();}
 function prevUI(){let p=null;try{p=JSON.parse(store.get(PKEY)||'null');}catch(_){}$('#bPrev').hidden=!hasData(p);$('#barTog').classList.toggle('alert',hasData(p));
   if(p&&p.fields)$('#bPrev').title='Recupera la scheda precedente non archiviata (N° '+(p.fields.scheda_n||'—')+(p.fields.nome?' · '+p.fields.nome:'')+')';}
 prevUI();fineUI();
