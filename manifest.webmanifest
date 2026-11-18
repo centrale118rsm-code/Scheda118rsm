@@ -1,7 +1,7 @@
 {
   "name": "Scheda di Intervento 118",
   "short_name": "Scheda 118",
-  "description": "Scheda di intervento 118 San Marino compilabile, con archivio nella cartella di rete ISS.",
+  "description": "Scheda di intervento 118 San Marino compilabile, con archivio PDF nella cartella di rete ISS, algoritmi infermieristici e PEDICards.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
@@ -28,16 +28,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
-    }
-  ],
-  "file_handlers": [
-    {
-      "action": "./",
-      "accept": {
-        "application/json": [
-          ".json"
-        ]
-      }
     }
   ]
 }
