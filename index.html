@@ -358,7 +358,7 @@ body.home .dock.has .dlabel{display:block}
 
 <div class="bar" id="bar">
   <button class="tog" type="button" id="barTog" aria-expanded="false" aria-controls="bar"><span class="bdg"></span>Menu<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-  <div class="t"><i></i>Scheda di Intervento 118 <span style="font-weight:600;font-size:11px;color:var(--muted)">v2026.11.20-c</span></div>
+  <div class="t"><i></i>Scheda di Intervento 118 <span style="font-weight:600;font-size:11px;color:var(--muted)">v2026.11.20-d</span></div>
   <span class="st sheetonly" id="st">—</span>
   <button class="btn" type="button" id="bHome" title="Riduci la scheda e torna alla schermata iniziale">⌂ <span class="tx">Home</span></button>
   <button class="btn" type="button" id="bNew" title="Nuova scheda (quella aperta resta in basso, ridotta a icona)">＋ <span class="tx">Nuova</span></button>
@@ -536,7 +536,7 @@ body.home .dock.has .dlabel{display:block}
   </button>
   <button class="hpend" type="button" id="hPend" hidden></button>
   <button class="hpend" type="button" id="hLegacy" hidden></button>
-  <div class="hver">v2026.11.20-c</div>
+  <div class="hver">v2026.11.20-d</div>
   <div class="hbooks">
     <button class="hbook" type="button" id="hAlg"><span class="bi alg"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="2.5" width="8" height="5" rx="1.2"/><rect x="2.5" y="16.5" width="8" height="5" rx="1.2"/><rect x="13.5" y="16.5" width="8" height="5" rx="1.2"/><path d="M12 7.5V12M6.5 16.5V12h11v4.5"/></svg></span><span>Algoritmi<br>infermieristici<small>Flow chart PR-UO PS 06</small></span></button>
     <button class="hbook" type="button" id="hPed"><span class="bi ped"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.2" fill="#fff" stroke="#15181d" stroke-width="1.4"/><rect x="5.7" y="5" width="12.6" height="2.2" fill="#9e9e9e"/><rect x="5.7" y="7.2" width="12.6" height="2.2" fill="#ff8fcf"/><rect x="5.7" y="9.4" width="12.6" height="2.2" fill="#e30613"/><rect x="5.7" y="11.6" width="12.6" height="2.2" fill="#ffd400"/><rect x="5.7" y="13.8" width="12.6" height="2.2" fill="#0a8de0"/><rect x="5.7" y="16" width="12.6" height="2.2" fill="#1fbf3a"/></svg></span><span>PEDICards<small>Dosi pediatriche per peso</small></span></button>
@@ -806,7 +806,7 @@ const FRASI_CAT_DEF=[
  {nome:'Scena',frasi:['Familiari presenti.','Paziente solo al domicilio.','Forze dell\'ordine presenti.','Vigili del Fuoco presenti.','Trovato in strada.','Scena sicura.','Testimoni presenti: ','Medico curante avvisato.']},
  {nome:'Trasporto',frasi:['Trasportato in PS in posizione semiseduta.','Trasportato in PS in decubito supino.','Parametri stabili durante il trasporto.','Miglioramento clinico dopo terapia.','Peggioramento durante il trasporto: ','Affidato al personale del PS.','Informato dei rischi, rifiuta il trasporto.','Lasciato al domicilio con i familiari.']}];
 const FRASI_DEF=FRASI_CAT_DEF.flatMap(c=>c.frasi);
-const CFG_DEF={archivio:true,stampaAuto:true,numAuto:true,verificaPdf:true,backup:true,frasi:true,nomiAuto:true,avvisi:true,frasiCat:FRASI_CAT_DEF,pw:null};
+const CFG_DEF={archivio:true,stampaAuto:true,verificaPdf:true,backup:true,frasi:true,nomiAuto:true,avvisi:true,frasiCat:FRASI_CAT_DEF,pw:null};
 let CFG=JSON.parse(JSON.stringify(CFG_DEF));
 let cfgOld=false;
 try{const c=JSON.parse(store.get(CFGKEY)||'null');if(c&&typeof c==='object'){cfgOld=!Array.isArray(c.frasiCat);CFG=Object.assign(CFG,c);}}catch(_){}
@@ -817,7 +817,7 @@ if(cfgOld||!Array.isArray(CFG.frasiCat)){   // passaggio dalla vecchia lista uni
 delete CFG.frasiList;
 const saveCfg=()=>store.set(CFGKEY,JSON.stringify(CFG));
 if(CFG.pwv!==4){CFG.pw=null;CFG.pwv=4;saveCfg();}   // password admin riportata a quella predefinita
-delete CFG.nuovaAvvio;
+delete CFG.nuovaAvvio;delete CFG.numAuto;
 
 /* ============ FIRMA (tratti vettoriali) ============ */
 const sigEl=$('#sig');let strokes=[],cur=null;
@@ -1161,7 +1161,7 @@ async function makePdf(){
     a.download=docName()+'.pdf';
     document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(a.href),4000);
-    toast('PDF scaricato',2200);markNumUsed();
+    toast('PDF scaricato',2200);
   }catch(err){console.error('PDF:',err);toast('Errore nel creare il PDF: prova con Stampa → Salva come PDF',4000);}
   finally{busy=false;busyBtns().forEach(b=>b.disabled=false);}
 }
@@ -1177,7 +1177,7 @@ async function doPrint(){
   }catch(err){console.error('Stampa:',err);document.body.classList.remove('has-print');}
   finally{busy=false;busyBtns().forEach(b=>b.disabled=false);$('#toast').classList.remove('show');}
   const old=document.title;document.title=docName();
-  window.print();markNumUsed();
+  window.print();
   setTimeout(()=>{document.title=old;},1500);
 }
 window.addEventListener('afterprint',()=>{document.body.classList.remove('has-print');$('#printArea').innerHTML='';});
@@ -1185,7 +1185,7 @@ $('#bPrint').addEventListener('click',doPrint);
 $('#bPdf').addEventListener('click',makePdf);
 
 /* ============ BARRA ============ */
-function fresh(){apply({fields:{data:today(),ora_comp:nowT()}});changed();window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>autoNumber(),80);}
+function fresh(){apply({fields:{data:today(),ora_comp:nowT()}});changed();window.scrollTo({top:0,behavior:'smooth'});}
 $('#bNew').addEventListener('click',()=>newSheet());
 $('#bHome').addEventListener('click',()=>minimizeSheet());
 // zoom
@@ -1528,7 +1528,6 @@ async function archiveAll(mode){
     }
     archInfo={rel:R.rel,ts,pdf:R.rel};saveNow();$('#st').textContent=stText();fineUI();
     toast('Archiviata: PDF salvato e verificato ('+kb(R.size)+')',3000);
-    updateLastNum(base).catch(()=>{});
     if(CFG.verificaPdf)setTimeout(async()=>{   // secondo controllo: il PDF è ancora lì e identico?
       if(await sameFile(pd,fn,buf))return;
       try{v.net=false;await vault.put(v);vaultBadge();}catch(_){}
@@ -1661,7 +1660,7 @@ $('#aList').addEventListener('click',async e=>{
 $('#bArchList').addEventListener('click',archOpenList);
 $('#bTestArch').addEventListener('click',async()=>{
   const out=$('#testOut');out.style.display='block';const L=[];const log=t=>{L.push(t);out.textContent=L.join('\n');};
-  log('Versione: v2026.11.20-c  ·  Browser: '+(navigator.userAgentData?navigator.userAgentData.brands.map(b=>b.brand+' '+b.version).filter(x=>!/Not/.test(x)).join(', '):navigator.userAgent));
+  log('Versione: v2026.11.20-d  ·  Browser: '+(navigator.userAgentData?navigator.userAgentData.brands.map(b=>b.brand+' '+b.version).filter(x=>!/Not/.test(x)).join(', '):navigator.userAgent));
   if(!FSA){log('✗ Questo browser non può salvare in cartella (serve Chrome o Edge).');return;}
   if(!archRoot){log('✗ Nessuna cartella scelta: premi «Scegli cartella».');return;}
   try{
@@ -1686,40 +1685,8 @@ $('#bTestArch').addEventListener('click',async()=>{
 });
 const archReady=archLoad();
 
-/* ---- numero scheda automatico: legge l'ultimo numero archiviato e propone il successivo ---- */
-const LKEY='scheda118_ultimo_num',IDX='ultimo-numero.json';
-const numOf=v=>{const n=parseInt(String(v||'').replace(/\D/g,''),10);return isFinite(n)&&n>0?n:0;};
-async function nextNumber(){
-  let best=numOf(store.get(LKEY));
-  SHEETS.forEach(x=>{if(x.id!==curId&&x.d&&x.d.fields)best=Math.max(best,numOf(x.d.fields.scheda_n));});
-  try{await archReady;}catch(_){}
-  if(archOn()&&archRoot){
-    try{
-      const ok=typeof archRoot.queryPermission!=='function'||(await archRoot.queryPermission({mode:'readwrite'}))==='granted';
-      if(ok&&await rootAlive()){const base=await archDir(false);const f=await (await base.getFileHandle(IDX)).getFile();best=Math.max(best,numOf(JSON.parse(await f.text()).ultimo));}
-    }catch(_){}
-  }
-  return best?best+1:0;
-}
-async function autoNumber(){
-  if(!CFG.numAuto)return;
-  const el=form.elements.scheda_n;if(el.value.trim())return;
-  const sid=curId,n=await nextNumber();
-  if(sid!==curId||document.body.classList.contains('home'))return;   // nel frattempo è stata aperta un'altra scheda
-  if(n&&!el.value.trim()){el.value=String(n);el.dispatchEvent(new Event('input',{bubbles:true}));toast('N° scheda proposto: '+n+' (modificabile)',2600);}
-}
-// anche un numero solo stampato o scaricato in PDF è «usato»: la scheda nuova non lo ripropone
-function markNumUsed(){
-  const n=numOf(form.elements.scheda_n.value);if(!n)return;
-  if(n>numOf(store.get(LKEY)))store.set(LKEY,String(n));
-  if(archOn()&&archRoot)(async()=>{try{if(await archPerm(archRoot,false)&&await rootAlive())await updateLastNum(await archDir(true));}catch(_){}})();
-}
-async function updateLastNum(base){
-  const n=numOf(form.elements.scheda_n.value);if(!n)return;
-  if(n>numOf(store.get(LKEY)))store.set(LKEY,String(n));
-  let ex=0;try{const f=await (await base.getFileHandle(IDX)).getFile();ex=numOf(JSON.parse(await f.text()).ultimo);}catch(_){}
-  if(n>ex)await writeF(base,IDX,new Blob([JSON.stringify({ultimo:n,aggiornato:new Date().toISOString()})],{type:'application/json'}));
-}
+/* il numero di scheda lo scrive sempre l'operatore: nessuna numerazione automatica */
+store.del('scheda118_ultimo_num');
 
 /* ---- frasi rapide: finestra mobile con categorie ---- */
 const fwin=$('#fwin'),FPOS='scheda118_frasi_pos';let fCat=0,fClosedByUser=false,lastTA=VAL,caret={};
@@ -1798,7 +1765,6 @@ async function pwOk(t){const h=await sha(t);if(CFG.pw)return h===CFG.pw;const v=
 const TOG=[
   ['archivio','Archiviazione nella cartella di rete','Con «Fine scheda» salva il PDF in 118 Scheda Digitale, lo verifica e ne tiene una copia di sicurezza. Se spenta: solo stampa e PDF.'],
   ['stampaAuto','Stampa insieme all\'archiviazione','Il pulsante principale di Fine scheda archivia e apre subito la stampa. Se spenta: archivia soltanto.'],
-  ['numAuto','Numero scheda automatico','Nella nuova scheda propone il numero successivo all\'ultimo archiviato (resta modificabile).'],
   ['avvisi','Avviso campi mancanti','Fine scheda elenca numero, data, Falco, equipaggio e codici non compilati.'],
   ['backup','Copia nella cartella backup','Ogni scheda salvata va anche nella cartella backup con il nome «Copia …». La cartella si sceglie più sotto.'],
   ['verificaPdf','Secondo controllo del PDF','Pochi secondi dopo il salvataggio rilegge il PDF dalla cartella di rete e controlla che sia ancora identico.'],
