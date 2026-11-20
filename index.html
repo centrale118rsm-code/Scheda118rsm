@@ -229,40 +229,100 @@ textarea.fld{resize:none;overflow:hidden;padding:0 calc(6 * var(--u));line-heigh
 }
 
 
-/* ---------- schermata iniziale ---------- */
-.homescr{position:fixed;inset:0;z-index:40;display:none;flex-direction:column;align-items:center;justify-content:center;padding:90px 16px 150px;
-  background:radial-gradient(1100px 680px at 50% 40%,#ffffff 0%,#eef1f5 55%,#dde2e9 100%)}
+/* ---------- schermata iniziale (cruscotto) ---------- */
+.homescr{position:fixed;inset:0;z-index:40;display:none;flex-direction:column;overflow-y:auto;background:#f3f5f8;color:var(--txt);
+  --hb:#ffffff;--hl:#e3e7ee;--hm:#677183;--hn:#0e1b3d;--ok:#137a3e;--okb:#e5f4ea;--wa:#8a5a00;--wab:#fff4d6;--ko:#b3060f;--kob:#fde8e9}
 body.home .homescr{display:flex}
-body.home .scroller,body.home #bFine,body.home #bMin,body.home .bar .sheetonly{display:none!important}
-.hhead{position:absolute;top:max(16px,env(safe-area-inset-top));left:20px;display:flex;align-items:center;gap:10px;font-weight:800;color:var(--ink);font-size:15px;line-height:1.1}
-.hhead img{width:34px;height:34px;border-radius:9px}
-.hhead small{display:block;font-weight:600;font-size:12px;color:var(--muted)}
-.hbig{appearance:none;border:0;cursor:pointer;background:#fff;border-radius:40px;padding:46px clamp(36px,8vw,96px) 36px;position:relative;overflow:hidden;
-  display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 30px 80px rgba(11,42,138,.16),0 6px 18px rgba(0,0,0,.08);transition:transform .15s,box-shadow .15s}
-.hbig::before{content:"";position:absolute;left:0;right:0;top:0;height:12px;background:linear-gradient(90deg,var(--red),#ff5a63)}
-.hbig .h1{font:800 clamp(26px,4.6vw,52px)/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;letter-spacing:.34em;margin-right:-.34em;color:var(--ink)}
-.hbig .h2{font:900 italic clamp(120px,22vw,260px)/.86 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;letter-spacing:-.04em;color:var(--red);margin:4px 0 10px}
-.hbig small{display:flex;align-items:center;justify-content:center;text-align:center;gap:8px;font:600 clamp(14px,1.7vw,18px)/1.2 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--muted)}
-.hbig small svg{width:22px;height:22px;fill:none;stroke:var(--red);stroke-width:2.6;stroke-linecap:round}
-.hbig:hover{transform:translateY(-3px);box-shadow:0 36px 90px rgba(11,42,138,.2),0 8px 20px rgba(0,0,0,.1)}
-.hbig:active{transform:scale(.985)}
-.hbig:focus-visible,.hbook:focus-visible,.hpend:focus-visible{outline:3px solid var(--focus);outline-offset:4px}
-.hpend{appearance:none;cursor:pointer;margin-top:22px;border:1px solid #e9b949;background:#fff7e0;color:#6b4a00;border-radius:12px;padding:10px 16px;font:700 14px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-.hpend[hidden]{display:none}
-.hver{position:absolute;top:max(22px,env(safe-area-inset-top));right:22px;font:600 11px system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--muted)}
-.hbooks{position:fixed;right:20px;bottom:max(20px,env(safe-area-inset-bottom));display:flex;gap:12px;z-index:41}
-.hbook{appearance:none;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:18px;padding:12px 18px 12px 12px;display:flex;align-items:center;gap:12px;
-  font:800 15px/1.15 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--txt);text-align:left;box-shadow:0 8px 22px rgba(0,0,0,.10);transition:transform .12s}
-.hbook:hover{transform:translateY(-2px)}
-.hbook small{display:block;font-weight:600;color:var(--muted);font-size:11.5px;margin-top:3px}
-.hbook .bi{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;flex:none}
-.hbook .bi svg{width:34px;height:34px}
+body.home .scroller,body.home #bFine,body.home #bMin,body.home .bar,body.home .dock{display:none!important}
+/* testata */
+.hbar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:16px;padding:12px 28px;padding-top:max(12px,env(safe-area-inset-top));background:var(--hn);color:#fff}
+.hbrand{display:flex;align-items:center;gap:12px;min-width:0;flex:1 1 auto}
+.hbrand>div{min-width:0}
+.hbrand img{width:38px;height:38px;border-radius:9px;background:#fff;flex:none}
+.hbrand b{display:block;font:700 16px/1.15 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbrand small{display:block;font:500 12px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#aeb8cc;white-space:nowrap}
+.hclock{margin-left:auto;flex:none;text-align:right;font:500 12px/1.25 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#aeb8cc;white-space:nowrap}
+.hclock b{display:block;font:700 22px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.hacts{display:flex;gap:6px;padding-left:16px;border-left:1px solid rgba(255,255,255,.14)}
+.hact{appearance:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 13px;border-radius:9px;border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.06);color:#fff;font:600 13px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;white-space:nowrap}
+.hact:hover{background:rgba(255,255,255,.14)}
+.hact svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.hact[hidden]{display:none}
+.hact .vbdg{margin-left:2px}
+/* stato */
+.hstat{display:flex;flex-wrap:wrap;gap:8px;padding:12px 28px;background:#fff;border-bottom:1px solid var(--hl)}
+.pill{appearance:none;display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--hl);background:#f7f8fa;color:var(--hm);
+  font:600 12.5px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;white-space:nowrap}
+.pill i{width:8px;height:8px;border-radius:50%;background:#9aa3b2;flex:none}
+.pill.ok{background:var(--okb);border-color:#bfe3cc;color:var(--ok)}.pill.ok i{background:#1f9d55}
+.pill.wa{background:var(--wab);border-color:#f0d58a;color:var(--wa)}.pill.wa i{background:#e0a100}
+.pill.ko{background:var(--kob);border-color:#f5b8bc;color:var(--ko)}.pill.ko i{background:var(--red)}
+button.pill{cursor:pointer}button.pill:hover{filter:brightness(.97)}
+.pill[hidden]{display:none}
+/* corpo */
+.hmain{width:100%;max-width:1240px;margin:0 auto;padding:26px 28px 34px;box-sizing:border-box;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-content:start;flex:1}
+.hhero{grid-column:1/-1;appearance:none;border:1px solid var(--hl);cursor:pointer;background:#fff;border-radius:18px;padding:34px 24px 30px;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;text-align:center;box-shadow:0 1px 2px rgba(14,27,61,.05),0 12px 32px rgba(14,27,61,.07);transition:box-shadow .15s,transform .15s}
+.hhero::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:var(--red)}
+.hhero:hover{box-shadow:0 1px 2px rgba(14,27,61,.06),0 18px 44px rgba(14,27,61,.12);transform:translateY(-1px)}
+.hhero:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.hov{font:700 12px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:var(--hm)}
+.htitle{display:flex;align-items:baseline;justify-content:center;gap:.22em;margin:14px 0 8px;line-height:.9}
+.htitle .t1{font:800 clamp(34px,5.4vw,66px)/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;letter-spacing:.16em;color:var(--hn)}
+.htitle .t2{font:900 italic clamp(64px,10.5vw,132px)/.85 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;letter-spacing:-.035em;color:var(--red)}
+.hdesc{text-wrap:balance;font:500 15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hm);margin:4px 0 20px;max-width:560px}
+.hcta{display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 26px;border-radius:12px;background:var(--red);color:#fff;font:700 16px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;box-shadow:0 8px 20px rgba(227,6,19,.28)}
+.hcta svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
+.hcta kbd{font:600 11px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding:4px 6px;border-radius:5px;background:rgba(255,255,255,.2);margin-left:4px}
+.halert{grid-column:1/-1;appearance:none;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;border-radius:12px;padding:12px 16px;
+  font:600 14px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;border:1px solid #f0d58a;background:var(--wab);color:var(--wa)}
+.halert.ko{border-color:#f5b8bc;background:var(--kob);color:var(--ko)}
+.halert[hidden]{display:none}
+.halert::before{content:"!";flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:800 14px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:currentColor;color:#fff}
+.hpanel{background:#fff;border:1px solid var(--hl);border-radius:16px;display:flex;flex-direction:column;min-height:250px;box-shadow:0 1px 2px rgba(14,27,61,.04)}
+.hph{display:flex;align-items:center;gap:10px;padding:16px 18px 12px;border-bottom:1px solid var(--hl)}
+.hph h3{margin:0;font:700 14px/1.2 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hn);letter-spacing:.01em}
+.hph .cnt{margin-left:auto;min-width:24px;height:22px;padding:0 8px;border-radius:999px;background:#eef1f6;color:var(--hm);font:700 12px/22px system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;text-align:center}
+.hph svg{width:18px;height:18px;fill:none;stroke:var(--hm);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.hlist{list-style:none;margin:0;padding:6px 8px 8px;overflow-y:auto;max-height:300px}
+.hrow{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;cursor:pointer}
+.hrow:hover,.hrow:focus-visible{background:#f4f6f9;outline:none}
+.hrow .ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex:none;background:#eef1f6;color:var(--hn);font:800 italic 11px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.hrow .ic.red{background:var(--red);color:#fff}.hrow .ic.grn{background:#1f9d55;color:#fff}
+.hrow .tx{min-width:0;flex:1}
+.hrow b{display:block;font:600 14px/1.25 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hrow .tx span{display:block;font:500 12.5px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.tag{flex:none;font:700 11px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;padding:5px 8px;border-radius:6px;background:#eef1f6;color:var(--hm);text-transform:uppercase;letter-spacing:.04em}
+.tag.ok{background:var(--okb);color:var(--ok)}.tag.wa{background:var(--wab);color:var(--wa)}
+.hx{appearance:none;flex:none;width:30px;height:30px;border-radius:8px;border:0;background:transparent;color:#98a1b0;cursor:pointer;font-size:14px}
+.hx:hover{background:var(--kob);color:var(--ko)}
+.hempty{margin:auto;padding:22px 18px;text-align:center;font:500 13.5px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#8a93a3}
+.hpf{margin-top:auto;padding:10px 18px 14px;border-top:1px solid var(--hl);display:flex;gap:8px}
+.hlink{appearance:none;border:0;background:none;padding:6px 0;color:var(--ink);font:600 13px/1 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;cursor:pointer}
+.hlink:hover{text-decoration:underline}
+.hbooks{display:flex;flex-direction:column;gap:10px;padding:14px}
+.hbook{appearance:none;cursor:pointer;display:flex;align-items:center;gap:14px;text-align:left;padding:14px;border-radius:12px;border:1px solid var(--hl);background:#fbfcfd;
+  font:700 14.5px/1.2 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--txt);transition:border-color .12s,background .12s}
+.hbook:hover{border-color:#b9c3d3;background:#f4f6f9}
+.hbook small{display:block;font:500 12px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--hm);margin-top:3px}
+.hbook .bi{width:46px;height:46px;border-radius:11px;display:grid;place-items:center;flex:none}
+.hbook .bi svg{width:30px;height:30px}
 .hbook .bi.alg{background:#e8eefc}
 .hbook .bi.alg svg{fill:#fff;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round}
 .hbook .bi.ped{background:#fdecef}
+.hbook .go{margin-left:auto;width:18px;height:18px;fill:none;stroke:#98a1b0;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.hfoot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:12px 28px max(14px,env(safe-area-inset-bottom));font:500 12px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#8a93a3;border-top:1px solid var(--hl);background:#fff}
+@media (max-width:980px){.hmain{grid-template-columns:repeat(2,minmax(0,1fr))}.hpanel.cons{grid-column:1/-1;min-height:0}.hpanel.cons .hbooks{flex-direction:row}.hpanel.cons .hbook{flex:1}}
+@media (max-width:700px){
+  .hbar{padding:10px 14px;gap:10px}.hbrand small,.hclock span{display:none}.hbrand b{font-size:14px}.hclock b{font-size:18px}
+  .hacts{padding-left:8px}.hact .tx{display:none}.hact{padding:0 10px}
+  .hstat{padding:10px 14px}.hmain{grid-template-columns:minmax(0,1fr);padding:16px 14px 24px;gap:14px}
+  .hhero{padding:26px 16px 22px}.hpanel{min-height:0}.hpanel.cons .hbooks{flex-direction:column}
+  .hfoot{padding:10px 14px}
+}
 /* ---------- schede ridotte a icona ---------- */
 .dock{position:fixed;left:20px;bottom:max(20px,env(safe-area-inset-bottom));z-index:44;display:flex;align-items:center;gap:10px;max-width:calc(100vw - 330px)}
-body.home .dock{max-width:calc(100vw - 470px)}
 .dlabel{display:none;font:800 11px/1.2 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);flex:none}
 body.home .dock.has .dlabel{display:block}
 .minbtn{appearance:none;flex:none;cursor:pointer;display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;
@@ -284,12 +344,6 @@ body.home .dock.has .dlabel{display:block}
 @media (max-width:760px){
   .minbtn span{display:none}.minbtn{padding:12px}
   .dock{left:12px;max-width:calc(100vw - 200px)}
-  body.home .dock{bottom:calc(max(20px,env(safe-area-inset-bottom)) + 92px);max-width:calc(100vw - 24px)}
-  .hbooks{left:12px;right:12px}.hbook{flex:1;padding:10px 12px 10px 10px;font-size:14px}
-  .hbook .bi{width:44px;height:44px}
-  .hver{display:none}
-  .hhead>span{display:none}
-  .hbig small svg{display:none}
 }
 /* ---------- libri (algoritmi e PEDICards) ---------- */
 .book{position:fixed;inset:0;z-index:70;background:#1b1e24;color:#fff;display:flex;flex-direction:column;font:15px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
@@ -335,7 +389,7 @@ body.home .dock.has .dlabel{display:block}
 @media print{
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   html,body{background:#fff;margin:0;width:210mm!important;min-width:0!important;overflow:visible!important}
-  .bar,.fab,.toast,.hint,.plabel,.sigclr,.fsbar,.aa,.acarr,.acpop,.mod,.finebtn,.fwin,.homescr,.dock,.book,.hbooks{display:none!important}
+  .bar,.fab,.toast,.hint,.plabel,.sigclr,.fsbar,.aa,.acarr,.acpop,.mod,.finebtn,.fwin,.homescr,.dock,.book{display:none!important}
   .fld,.cb,.sig{background:transparent!important;box-shadow:none!important}
   .bz:hover{fill:transparent}
   .bz.on{fill:rgba(227,6,19,.45)}
@@ -358,7 +412,7 @@ body.home .dock.has .dlabel{display:block}
 
 <div class="bar" id="bar">
   <button class="tog" type="button" id="barTog" aria-expanded="false" aria-controls="bar"><span class="bdg"></span>Menu<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-  <div class="t"><i></i>Scheda di Intervento 118 <span style="font-weight:600;font-size:11px;color:var(--muted)">v2026.11.20-d</span></div>
+  <div class="t"><i></i>Scheda di Intervento 118 <span style="font-weight:600;font-size:11px;color:var(--muted)">v2026.11.20-e</span></div>
   <span class="st sheetonly" id="st">—</span>
   <button class="btn" type="button" id="bHome" title="Riduci la scheda e torna alla schermata iniziale">⌂ <span class="tx">Home</span></button>
   <button class="btn" type="button" id="bNew" title="Nuova scheda (quella aperta resta in basso, ridotta a icona)">＋ <span class="tx">Nuova</span></button>
@@ -529,18 +583,48 @@ body.home .dock.has .dlabel{display:block}
 
 
 <div class="homescr" id="home">
-  <div class="hhead"><img src="data:image/png;base64,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" alt="" width="34" height="34"><span>Scheda di Intervento 118<small>ISS · San Marino</small></span></div>
-  <button class="hbig" type="button" id="hNew" aria-label="Apri una nuova Scheda 118 da compilare">
-    <span class="h1">SCHEDA</span><span class="h2">118</span>
-    <small><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Tocca per compilare una nuova scheda</small>
-  </button>
-  <button class="hpend" type="button" id="hPend" hidden></button>
-  <button class="hpend" type="button" id="hLegacy" hidden></button>
-  <div class="hver">v2026.11.20-d</div>
-  <div class="hbooks">
-    <button class="hbook" type="button" id="hAlg"><span class="bi alg"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="2.5" width="8" height="5" rx="1.2"/><rect x="2.5" y="16.5" width="8" height="5" rx="1.2"/><rect x="13.5" y="16.5" width="8" height="5" rx="1.2"/><path d="M12 7.5V12M6.5 16.5V12h11v4.5"/></svg></span><span>Algoritmi<br>infermieristici<small>Flow chart PR-UO PS 06</small></span></button>
-    <button class="hbook" type="button" id="hPed"><span class="bi ped"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.2" fill="#fff" stroke="#15181d" stroke-width="1.4"/><rect x="5.7" y="5" width="12.6" height="2.2" fill="#9e9e9e"/><rect x="5.7" y="7.2" width="12.6" height="2.2" fill="#ff8fcf"/><rect x="5.7" y="9.4" width="12.6" height="2.2" fill="#e30613"/><rect x="5.7" y="11.6" width="12.6" height="2.2" fill="#ffd400"/><rect x="5.7" y="13.8" width="12.6" height="2.2" fill="#0a8de0"/><rect x="5.7" y="16" width="12.6" height="2.2" fill="#1fbf3a"/></svg></span><span>PEDICards<small>Dosi pediatriche per peso</small></span></button>
+  <header class="hbar">
+    <div class="hbrand"><img src="data:image/png;base64,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" alt="" width="38" height="38"><div><b>Scheda di Intervento 118</b><small>ISS · Repubblica di San Marino</small></div></div>
+    <div class="hclock" aria-live="off"><b id="hTime">--:--</b><span id="hDate"></span></div>
+    <nav class="hacts" aria-label="Strumenti">
+      <button class="hact" type="button" id="hInst" hidden title="Installa come app"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg><span class="tx">Installa</span></button>
+      <button class="hact" type="button" id="hArch" title="Archivio PDF"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span class="tx">Archivio</span></button>
+      <button class="hact" type="button" id="hVault" title="Copie di sicurezza"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><span class="tx">Copie</span><span class="vbdg" id="hVBdg" hidden></span></button>
+      <button class="hact" type="button" id="hSet" title="Cartella e area admin"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span class="tx">Admin</span></button>
+    </nav>
+  </header>
+  <div class="hstat" aria-label="Stato">
+    <button class="pill" type="button" id="pNet"><i></i><span>Cartella di rete</span></button>
+    <button class="pill" type="button" id="pBak"><i></i><span>Backup</span></button>
+    <span class="pill" id="pToday"><i></i><span>Oggi</span></span>
   </div>
+  <main class="hmain">
+    <button class="halert ko" type="button" id="hPend" hidden></button>
+    <button class="halert" type="button" id="hLegacy" hidden></button>
+    <button class="hhero" type="button" id="hNew" aria-label="Apri una nuova Scheda 118 da compilare">
+      <span class="hov">Nuova scheda di intervento</span>
+      <span class="htitle"><span class="t1">SCHEDA</span><span class="t2">118</span></span>
+      <span class="hdesc">Compila fronte e retro: con «Fine scheda» il PDF viene archiviato nella cartella di rete ISS.</span>
+      <span class="hcta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Compila nuova scheda<kbd>N</kbd></span>
+    </button>
+    <section class="hpanel" aria-labelledby="hOpenT">
+      <div class="hph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg><h3 id="hOpenT">Schede aperte</h3><span class="cnt" id="hOpenN">0</span></div>
+      <ul class="hlist" id="hOpen"></ul>
+    </section>
+    <section class="hpanel" aria-labelledby="hRecT">
+      <div class="hph"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 10"/></svg><h3 id="hRecT">Archiviate di recente</h3><span class="cnt" id="hRecN">0</span></div>
+      <ul class="hlist" id="hRec"></ul>
+      <div class="hpf"><button class="hlink" type="button" id="hRecAll">Apri l'archivio completo</button></div>
+    </section>
+    <section class="hpanel cons" aria-labelledby="hConsT">
+      <div class="hph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg><h3 id="hConsT">Consultazione</h3></div>
+      <div class="hbooks">
+        <button class="hbook" type="button" id="hAlg"><span class="bi alg"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="2.5" width="8" height="5" rx="1.2"/><rect x="2.5" y="16.5" width="8" height="5" rx="1.2"/><rect x="13.5" y="16.5" width="8" height="5" rx="1.2"/><path d="M12 7.5V12M6.5 16.5V12h11v4.5"/></svg></span><span>Algoritmi infermieristici<small>Flow chart PR-UO PS 06 · 7 algoritmi</small></span><svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+        <button class="hbook" type="button" id="hPed"><span class="bi ped"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.2" fill="#fff" stroke="#15181d" stroke-width="1.4"/><rect x="5.7" y="5" width="12.6" height="2.2" fill="#9e9e9e"/><rect x="5.7" y="7.2" width="12.6" height="2.2" fill="#ff8fcf"/><rect x="5.7" y="9.4" width="12.6" height="2.2" fill="#e30613"/><rect x="5.7" y="11.6" width="12.6" height="2.2" fill="#ffd400"/><rect x="5.7" y="13.8" width="12.6" height="2.2" fill="#0a8de0"/><rect x="5.7" y="16" width="12.6" height="2.2" fill="#1fbf3a"/></svg></span><span>PEDICards<small>Dosaggi pediatrici per fascia di peso</small></span><svg class="go" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+    </section>
+  </main>
+  <footer class="hfoot"><span>I dati dei pazienti restano su questo computer e nella cartella di rete ISS: nessun invio su internet.</span><span class="hver">v2026.11.20-e</span></footer>
 </div>
 <div class="dock" id="dock">
   <button class="minbtn" type="button" id="bMin" title="Riduci la scheda a icona e torna alla schermata iniziale"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19h14"/><path d="M12 4v10m-4-4 4 4 4-4"/></svg><span>Riduci a icona</span></button>
@@ -1314,6 +1398,7 @@ function archUI(){
   $('#bArchList').hidden=!FSA||!CFG.archivio;$('#archYes').hidden=!FSA;$('#archNo').hidden=FSA;$('#bakWrap').hidden=!FSA;
   $('#bakCard').classList.toggle('ok',bakOn());
   $('#bakState').textContent=!bakRoot?'Cartella backup non scelta (resta comunque la copia interna nell\'app)':(bakRoot.name||'cartella')+(bakIsSub(bakRoot)?'':' › '+BAK_SUB)+(CFG.backup?' ✓ attiva':' — disattivata (interruttore qui sopra)');
+  try{if(isHome())homeStatus();}catch(_){}
   clearTimeout(window.__legT);window.__legT=setTimeout(()=>{legacyUI().catch(()=>{});},400);
   $('#bBakPick').textContent=bakRoot?'Cambia cartella backup':'Scegli cartella backup';$('#bBakOff').hidden=!bakRoot;
   $('#archCard').classList.toggle('ok',!!archRoot);
@@ -1445,7 +1530,8 @@ async function vaultPending(){try{return (await vault.all()).filter(v=>!v.net||v
 async function vaultBadge(){
   const n=await vaultPending();
   $('#vBdg').hidden=!n;$('#vBdg').textContent=n;
-  $('#hPend').hidden=!n;$('#hPend').textContent='⚠ '+n+(n===1?' PDF da salvare':' PDF da salvare')+' nella cartella di rete — tocca per vedere';
+  if($('#hVBdg')){$('#hVBdg').hidden=!n;$('#hVBdg').textContent=n;}try{if(isHome())homeRec();}catch(_){}
+  $('#hPend').hidden=!n;$('#hPend').textContent=n+(n===1?' PDF da salvare':' PDF da salvare')+' nella cartella di rete — tocca per vedere';
   $('#barTog').classList.toggle('alert',!!n||!$('#bInstall').hidden);
 }
 async function vaultPrune(){
@@ -1660,7 +1746,7 @@ $('#aList').addEventListener('click',async e=>{
 $('#bArchList').addEventListener('click',archOpenList);
 $('#bTestArch').addEventListener('click',async()=>{
   const out=$('#testOut');out.style.display='block';const L=[];const log=t=>{L.push(t);out.textContent=L.join('\n');};
-  log('Versione: v2026.11.20-d  ·  Browser: '+(navigator.userAgentData?navigator.userAgentData.brands.map(b=>b.brand+' '+b.version).filter(x=>!/Not/.test(x)).join(', '):navigator.userAgent));
+  log('Versione: v2026.11.20-e  ·  Browser: '+(navigator.userAgentData?navigator.userAgentData.brands.map(b=>b.brand+' '+b.version).filter(x=>!/Not/.test(x)).join(', '):navigator.userAgent));
   if(!FSA){log('✗ Questo browser non può salvare in cartella (serve Chrome o Edge).');return;}
   if(!archRoot){log('✗ Nessuna cartella scelta: premi «Scegli cartella».');return;}
   try{
@@ -1830,12 +1916,13 @@ function dockRender(){
   const L=SHEETS.filter(x=>x.id===curId||hasData(x.d)||wasArch(x.d));
   $('#dock').classList.toggle('has',L.length>0);
   $('#dLabel').textContent=L.length===1?'1 scheda aperta':L.length+' schede aperte';
+  try{if(isHome())homeOpen();}catch(_){}
   $('#dList').innerHTML=L.map(x=>{const d=x.d;return '<div class="dchip'+(x.id===curId?' cur':'')+(wasArch(d)?' ok':'')+'" role="button" tabindex="0" data-sid="'+x.id+'" title="Apri questa scheda"><span class="dic"></span><span class="dt"><b>'+escH(sheetWho(d))+'</b><span>'+escH(sheetSub(d))+'</span></span><span class="dx" role="button" data-sx="'+x.id+'" title="Chiudi questa scheda" aria-label="Chiudi scheda">✕</span></div>';}).join('');
 }
 function showHome(){
   stashCur();curId=null;document.body.classList.add('home');closeMod();
   try{fwinShow(false);}catch(_){}acClose();barSet(false);dockRender();vaultBadge();
-  document.title='Scheda 118';window.scrollTo(0,0);
+  document.title='Scheda 118';window.scrollTo(0,0);try{homeRender();}catch(_){}
 }
 function showSheet(){document.body.classList.remove('home');dockRender();window.scrollTo({top:0});}
 function openSheet(id){
@@ -1851,7 +1938,7 @@ function newSheet(){
 }
 function minimizeSheet(){
   const c=curSheet();showHome();
-  if(c&&SHEETS.includes(c))toast('Scheda ridotta a icona: la trovi in basso',2400);
+  if(c&&SHEETS.includes(c))toast('Scheda ridotta: la trovi in «Schede aperte»',2400);
 }
 function closeSheet(id){
   const x=SHEETS.find(z=>z.id===id);if(!x)return;
@@ -1932,7 +2019,7 @@ async function legacyUI(){
   let L=null;try{L=await legacyFind();}catch(_){}
   $('#hLegacy').hidden=!L;$('#legRow').hidden=!L;
   const done=!!store.get('scheda118_legacy_ok');
-  if(L){$('#hLegacy').textContent=done?'La cartella vecchia «'+LEGACY+'» è ancora lì: i PDF sono già copiati, puoi cancellarla (tocca per ricontrollare)':'⚠ Trovata la cartella vecchia «'+LEGACY+'»: tocca per copiare i suoi PDF nell\'archivio giusto';$('#legInfo').textContent='creata da una versione vecchia della scheda';}
+  if(L){$('#hLegacy').textContent=done?'La cartella vecchia «'+LEGACY+'» è ancora lì: i PDF sono già copiati, puoi cancellarla (tocca per ricontrollare)':'Trovata la cartella vecchia «'+LEGACY+'»: tocca per copiare i suoi PDF nell\'archivio giusto';$('#legInfo').textContent='creata da una versione vecchia della scheda';}
 }
 async function legacyCopy(){
   if(busy)return;
@@ -1967,6 +2054,81 @@ $('#bLegacy').addEventListener('click',legacyCopy);
 archReady.then(()=>{vaultPrune().then(()=>vaultRetry(false));legacyUI();});
 window.addEventListener('online',()=>setTimeout(()=>vaultRetry(false),2000));
 setInterval(()=>vaultRetry(false),300000);
+
+/* ============ CRUSCOTTO (schermata iniziale) ============ */
+const isHome=()=>document.body.classList.contains('home');
+function hClock(){
+  const d=new Date();$('#hTime').textContent=pad2(d.getHours())+':'+pad2(d.getMinutes());
+  const t=d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});$('#hDate').textContent=t.charAt(0).toUpperCase()+t.slice(1);
+}
+function pill(el,cls,txt,title){el.className='pill'+(cls?' '+cls:'');el.querySelector('span').textContent=txt;if(title!=null)el.title=title;}
+let hNetState='';
+async function homeStatus(){
+  const pn=$('#pNet'),pb=$('#pBak');
+  if(!FSA)pill(pn,'wa','Salvataggio in cartella non disponibile in questo browser','Usa Chrome o Edge sul PC');
+  else if(!CFG.archivio)pill(pn,'','Archiviazione disattivata (area admin)','');
+  else if(!archRoot)pill(pn,'wa','Cartella di rete da scegliere','Tocca per scegliere la cartella 118 Scheda Digitale');
+  else{
+    let ok=false;try{ok=await archPerm(archRoot,false);}catch(_){}
+    if(!ok)pill(pn,'wa','Cartella di rete: permesso da confermare','Tocca per confermare il permesso');
+    else{let alive=false;try{alive=await rootAlive();}catch(_){}
+      pill(pn,alive?'ok':'ko',alive?'Cartella di rete collegata':'Cartella di rete non raggiungibile',alive?ARCH_PATH:'Sei collegato alla rete ISS?');}
+  }
+  hNetState=pn.className;
+  if(!FSA||!CFG.archivio)pb.hidden=true;
+  else{pb.hidden=false;pill(pb,bakOn()?'ok':'',bakOn()?'Backup attivo · '+(bakRoot.name||''):(bakRoot&&!CFG.backup?'Backup disattivato':'Backup non configurato'),'Si imposta dall\'area admin');}
+}
+async function homeRec(){
+  let L=[];try{L=(await vault.all()).sort((a,b)=>b.ts-a.ts);}catch(_){}
+  const t0=new Date();t0.setHours(0,0,0,0);
+  const today=L.filter(v=>v.ts>=t0.getTime()&&v.net).length;
+  pill($('#pToday'),today?'ok':'',today?(today===1?'1 scheda archiviata oggi':today+' schede archiviate oggi'):'Nessuna scheda archiviata oggi','Conteggio di questo computer');
+  const R=L.slice(0,8);$('#hRecN').textContent=L.length;
+  $('#hRec').innerHTML=R.length?R.map(v=>{const d=new Date(v.ts),same=d>=t0;
+    const when=(same?'Oggi':d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'}))+' alle '+pad2(d.getHours())+':'+pad2(d.getMinutes());
+    const nmP=v.fn.replace(/\.pdf$/i,'').split(' - ');
+    return '<li class="hrow" tabindex="0" data-vo="'+escH(v.id)+'" title="Apri il PDF"><span class="ic '+(v.net?'grn':'red')+'">PDF</span><span class="tx"><b>'+escH(nmP[0])+'</b><span>'+escH((nmP[1]?'Scheda del '+nmP[1]+' · ':'')+'salvata '+when.charAt(0).toLowerCase()+when.slice(1))+'</span></span>'+
+      (v.net?'<span class="tag ok">Archiviata</span>':'<span class="tag wa">Da salvare</span>')+'</li>';}).join('')
+    :'<li class="hempty">Le schede archiviate da questo computer compariranno qui.</li>';
+}
+function homeOpen(){
+  const L=SHEETS.filter(x=>hasData(x.d)||wasArch(x.d)).sort((a,b)=>(b.t||0)-(a.t||0));
+  $('#hOpenN').textContent=L.length;
+  $('#hOpen').innerHTML=L.length?L.map(x=>{const d=x.d,f=(d&&d.fields)||{},a=wasArch(d);
+    const sub=[f.scheda_n?'N° '+f.scheda_n:'senza numero',f.ora_comp?'ore '+f.ora_comp:'',f.luogo||''].filter(Boolean).join(' · ');
+    return '<li class="hrow" tabindex="0" data-sid="'+x.id+'" title="Riprendi questa scheda"><span class="ic red">118</span><span class="tx"><b>'+escH(sheetWho(d))+'</b><span>'+escH(sub)+'</span></span>'+
+      (a?'<span class="tag ok">Archiviata</span>':'<span class="tag wa">In corso</span>')+'<button class="hx" type="button" data-sx="'+x.id+'" title="Chiudi questa scheda" aria-label="Chiudi scheda">✕</button></li>';}).join('')
+    :'<li class="hempty">Nessuna scheda in corso.<br>Con «Riduci a icona» una scheda resta qui e puoi riprenderla quando vuoi.</li>';
+}
+function homeRender(){
+  if(!$('#hOpen'))return;
+  hClock();homeOpen();homeRec();homeStatus();
+  $('#hInst').hidden=$('#bInstall').hidden;$('#hArch').hidden=!FSA||!CFG.archivio;
+}
+setInterval(()=>{if(isHome())hClock();},10000);
+setInterval(()=>{if(isHome())homeStatus();},60000);
+$('#hOpen').addEventListener('click',e=>{const xb=e.target.closest('[data-sx]');if(xb){e.stopPropagation();closeSheet(xb.dataset.sx);homeOpen();return;}const r=e.target.closest('[data-sid]');if(r)openSheet(r.dataset.sid);});
+$('#hRec').addEventListener('click',async e=>{const r=e.target.closest('[data-vo]');if(!r)return;
+  try{const v=await vault.get(r.dataset.vo);if(!v)return;const u=URL.createObjectURL(v.blob);if(!window.open(u,'_blank'))downloadBlob(v.blob,v.fn);setTimeout(()=>URL.revokeObjectURL(u),60000);}catch(err){alert('Non riesco ad aprire il PDF ('+errTxt(err)+').');}});
+['hOpen','hRec'].forEach(id=>$('#'+id).addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('hrow')){e.preventDefault();e.target.click();}}));
+$('#hRecAll').addEventListener('click',()=>{if(!FSA||!CFG.archivio){vaultOpen();return;}$('#bArchList').click();});
+$('#hArch').addEventListener('click',()=>$('#bArchList').click());
+$('#hVault').addEventListener('click',()=>vaultOpen());
+$('#hSet').addEventListener('click',()=>$('#bSet').click());
+$('#hInst').addEventListener('click',()=>$('#bInstall').click());
+$('#pNet').addEventListener('click',async()=>{
+  if(!FSA||!CFG.archivio)return;
+  if(!archRoot){needSetup(true);return;}
+  try{if(await archPerm(archRoot,true)){toast('Permesso confermato',1600);vaultRetry(false);}}catch(_){}
+  homeStatus();
+});
+$('#pBak').addEventListener('click',()=>$('#bSet').click());
+document.addEventListener('keydown',e=>{
+  if(!isHome()||e.ctrlKey||e.metaKey||e.altKey||!$('#book').hidden||document.querySelector('.mod.show'))return;
+  if(/^(INPUT|TEXTAREA|SELECT)$/.test((e.target&&e.target.tagName)||''))return;
+  if(e.key==='n'||e.key==='N'){e.preventDefault();newSheet();}
+});
+homeRender();
 
 /* ============ LIBRI: algoritmi infermieristici e PEDICards ============ */
 const BOOKS={
@@ -2054,7 +2216,7 @@ document.addEventListener('keydown',e=>{
 });
 // installazione come app (da GitHub Pages) e funzionamento senza rete
 let installEvt=null;
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;$('#bInstall').hidden=false;$('#barTog').classList.add('alert');});
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;$('#bInstall').hidden=false;$('#barTog').classList.add('alert');try{$('#hInst').hidden=false;}catch(_){}});
 $('#bInstall').addEventListener('click',async()=>{if(!installEvt)return;installEvt.prompt();try{await installEvt.userChoice;}catch(_){}installEvt=null;$('#bInstall').hidden=true;vaultBadge();});
 window.addEventListener('appinstalled',()=>{$('#bInstall').hidden=true;vaultBadge();setTimeout(()=>openMod('mDesk'),600);});
 const isEdge=()=>/Edg\//.test(navigator.userAgent);
