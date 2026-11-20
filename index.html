@@ -358,7 +358,7 @@ body.home .dock.has .dlabel{display:block}
 
 <div class="bar" id="bar">
   <button class="tog" type="button" id="barTog" aria-expanded="false" aria-controls="bar"><span class="bdg"></span>Menu<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-  <div class="t"><i></i>Scheda di Intervento 118 <span style="font-weight:600;font-size:11px;color:var(--muted)">v2026.11.18-b</span></div>
+  <div class="t"><i></i>Scheda di Intervento 118 <span style="font-weight:600;font-size:11px;color:var(--muted)">v2026.11.20-a</span></div>
   <span class="st sheetonly" id="st">—</span>
   <button class="btn" type="button" id="bHome" title="Riduci la scheda e torna alla schermata iniziale">⌂ <span class="tx">Home</span></button>
   <button class="btn" type="button" id="bNew" title="Nuova scheda (quella aperta resta in basso, ridotta a icona)">＋ <span class="tx">Nuova</span></button>
@@ -435,16 +435,18 @@ body.home .dock.has .dlabel{display:block}
         <p id="archNo" class="mhint" style="margin:0" hidden>Questo browser non permette di salvare in una cartella: apri la scheda con <b>Chrome</b> o <b>Edge</b> sul PC. Qui puoi usare «Salva PDF».</p>
       </div>
       <div class="mrow" style="margin-top:10px"><button class="btn" type="button" id="bTestArch">Prova la cartella</button><span class="mhint" style="margin:0">salva PDF di prova, li rilegge e mostra cosa riesce</span></div>
+      <div class="mrow" id="legRow" style="margin-top:8px" hidden><button class="btn" type="button" id="bLegacy">Recupera PDF dalla cartella vecchia</button><span class="mhint" style="margin:0" id="legInfo"></span></div>
       <pre id="testOut" class="mono" style="display:none;white-space:pre-wrap;font-size:12.5px;background:#f6f8fa;border:1px solid var(--line);border-radius:8px;padding:10px;margin:8px 0 0"></pre>
+      <div id="secAdm">
       <div id="bakWrap">
-      <div class="msub">Doppia sicurezza: seconda cartella</div>
+      <div class="msub">Cartella backup</div>
       <div class="archcard" id="bakCard">
         <p style="margin:0 0 6px;font-weight:800" id="bakState"></p>
-        <p class="mhint" style="margin:0 0 8px">Ogni PDF viene salvato <b>due volte</b>: nella cartella di rete e in questa seconda cartella (consigliata una cartella sul disco del PC, per esempio <span class="mono">Documenti\Scheda 118 Copia</span>). In più l'app tiene sempre una <b>copia interna</b> (menu › Copie di sicurezza) e, se la rete non risponde, la salva da sola appena torna disponibile.</p>
-        <div class="mrow"><button class="btn pri" type="button" id="bBakPick">Scegli seconda cartella</button><button class="btn" type="button" id="bBakOff" hidden>Non usare la seconda cartella</button></div>
+        <p class="mhint" style="margin:0 0 8px">Ogni scheda salvata va anche qui, con lo stesso nome preceduto da <b>«Copia»</b> (per esempio <span class="mono">Copia ISS 123456 - 18-11-2026 14.35.pdf</span>), divisa per anno › mese › giorno. Se qualcuno cancella la cartella principale delle schede, le copie restano.</p>
+        <p class="mhint" style="margin:0 0 8px">Scegli una cartella <b>fuori</b> da «118 Scheda Digitale», per esempio <span class="mono">\\dati.iss.local\Pronto Soccorso\118 Backup</span> (nella finestra di Windows puoi crearla con «Nuova cartella»). Se il nome della cartella scelta non contiene «backup», dentro viene creata «118 Backup Schede». La scelta vale per questo computer: va fatta su ogni PC.</p>
+        <div class="mrow"><button class="btn pri" type="button" id="bBakPick">Scegli cartella backup</button><button class="btn" type="button" id="bBakOff" hidden>Togli cartella backup</button></div>
       </div>
       </div>
-      <div id="secAdm">
       <div class="msub">Nomi per INF, AUT e MED (uno per riga)</div>
       <div class="mrow" style="margin-bottom:10px">
         <button class="btn" type="button" id="bSync">Aggiorna dai programmi turni</button>
@@ -533,7 +535,8 @@ body.home .dock.has .dlabel{display:block}
     <small><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Tocca per compilare una nuova scheda</small>
   </button>
   <button class="hpend" type="button" id="hPend" hidden></button>
-  <div class="hver">v2026.11.18-b</div>
+  <button class="hpend" type="button" id="hLegacy" hidden></button>
+  <div class="hver">v2026.11.20-a</div>
   <div class="hbooks">
     <button class="hbook" type="button" id="hAlg"><span class="bi alg"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="2.5" width="8" height="5" rx="1.2"/><rect x="2.5" y="16.5" width="8" height="5" rx="1.2"/><rect x="13.5" y="16.5" width="8" height="5" rx="1.2"/><path d="M12 7.5V12M6.5 16.5V12h11v4.5"/></svg></span><span>Algoritmi<br>infermieristici<small>Flow chart PR-UO PS 06</small></span></button>
     <button class="hbook" type="button" id="hPed"><span class="bi ped"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.2" fill="#fff" stroke="#15181d" stroke-width="1.4"/><rect x="5.7" y="5" width="12.6" height="2.2" fill="#9e9e9e"/><rect x="5.7" y="7.2" width="12.6" height="2.2" fill="#ff8fcf"/><rect x="5.7" y="9.4" width="12.6" height="2.2" fill="#e30613"/><rect x="5.7" y="11.6" width="12.6" height="2.2" fill="#ffd400"/><rect x="5.7" y="13.8" width="12.6" height="2.2" fill="#0a8de0"/><rect x="5.7" y="16" width="12.6" height="2.2" fill="#1fbf3a"/></svg></span><span>PEDICards<small>Dosi pediatriche per peso</small></span></button>
@@ -803,7 +806,7 @@ const FRASI_CAT_DEF=[
  {nome:'Scena',frasi:['Familiari presenti.','Paziente solo al domicilio.','Forze dell\'ordine presenti.','Vigili del Fuoco presenti.','Trovato in strada.','Scena sicura.','Testimoni presenti: ','Medico curante avvisato.']},
  {nome:'Trasporto',frasi:['Trasportato in PS in posizione semiseduta.','Trasportato in PS in decubito supino.','Parametri stabili durante il trasporto.','Miglioramento clinico dopo terapia.','Peggioramento durante il trasporto: ','Affidato al personale del PS.','Informato dei rischi, rifiuta il trasporto.','Lasciato al domicilio con i familiari.']}];
 const FRASI_DEF=FRASI_CAT_DEF.flatMap(c=>c.frasi);
-const CFG_DEF={archivio:true,stampaAuto:true,numAuto:true,verificaPdf:true,frasi:true,nomiAuto:true,avvisi:true,frasiCat:FRASI_CAT_DEF,pw:null};
+const CFG_DEF={archivio:true,stampaAuto:true,numAuto:true,verificaPdf:true,backup:true,frasi:true,nomiAuto:true,avvisi:true,frasiCat:FRASI_CAT_DEF,pw:null};
 let CFG=JSON.parse(JSON.stringify(CFG_DEF));
 let cfgOld=false;
 try{const c=JSON.parse(store.get(CFGKEY)||'null');if(c&&typeof c==='object'){cfgOld=!Array.isArray(c.frasiCat);CFG=Object.assign(CFG,c);}}catch(_){}
@@ -1303,12 +1306,16 @@ const idb={p:null,
   async get(k){const db=await this.open();return new Promise((ok,ko)=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>ok(q.result);q.onerror=()=>ko(q.error);});},
   async set(k,v){const db=await this.open();return new Promise((ok,ko)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>ok();t.onerror=()=>ko(t.error);});}};
 let archRoot=null,bakRoot=null,archPending=false;
+const BAK_SUB='118 Backup Schede',BAK_PRE='Copia ';
+const bakOn=()=>!!(FSA&&CFG.archivio&&CFG.backup&&bakRoot);
 const isSubRoot=()=>!!archRoot&&[ARCH_SUB,'Scheda 118 Digitale'].some(x=>normS(archRoot.name)===normS(x));
 const safeN=v=>String(v).replace(/[\\/:*?"<>|]+/g,'-');
 function archUI(){
   $('#bArchList').hidden=!FSA||!CFG.archivio;$('#archYes').hidden=!FSA;$('#archNo').hidden=FSA;$('#bakWrap').hidden=!FSA;
-  $('#bakCard').classList.toggle('ok',!!bakRoot);$('#bakState').textContent=bakRoot?'Seconda cartella: '+(bakRoot.name||'scelta')+' ✓':'Seconda cartella non scelta (resta comunque la copia interna)';
-  $('#bBakPick').textContent=bakRoot?'Cambia seconda cartella':'Scegli seconda cartella';$('#bBakOff').hidden=!bakRoot;
+  $('#bakCard').classList.toggle('ok',bakOn());
+  $('#bakState').textContent=!bakRoot?'Cartella backup non scelta (resta comunque la copia interna nell\'app)':(bakRoot.name||'cartella')+(bakIsSub(bakRoot)?'':' › '+BAK_SUB)+(CFG.backup?' ✓ attiva':' — disattivata (interruttore qui sopra)');
+  clearTimeout(window.__legT);window.__legT=setTimeout(()=>{legacyUI().catch(()=>{});},400);
+  $('#bBakPick').textContent=bakRoot?'Cambia cartella backup':'Scegli cartella backup';$('#bBakOff').hidden=!bakRoot;
   $('#archCard').classList.toggle('ok',!!archRoot);
   $('#archState').textContent=archRoot?'Cartella archivio: '+(isSubRoot()?'… › ':(archRoot.name||'cartella scelta')+' › ')+ARCH_SUB:'Cartella archivio non ancora scelta';
   $('#bArchPick').textContent=archRoot?'Cambia cartella':'Scegli cartella';
@@ -1413,12 +1420,16 @@ async function freeName(dir,nm,mine){
   while(fn!==mine&&await occupied(dir,fn)){fn=nm+' ('+k+').pdf';k++;if(k>99)break;}
   return fn;
 }
-async function bakWrite(parts,fn,buf,ask){
+// cartella backup: stesso nome con «Copia» davanti, divisa per anno/mese/giorno
+const bakIsSub=h=>/backup/i.test((h&&h.name)||'');
+async function bakDir(parts){const b=bakIsSub(bakRoot)?bakRoot:await bakRoot.getDirectoryHandle(BAK_SUB,{create:true});return dirPath(b,parts,true);}
+async function bakWrite(parts,fn,buf,ask,mine){
   if(!bakRoot)return null;
-  if(!(await archPerm(bakRoot,ask)))throw Object.assign(new Error('permesso della seconda cartella da confermare'),{code:'perm',name:'NotAllowedError'});
-  const d=await dirPath(bakRoot,[DIR_PDF].concat(parts),true);
-  const name=(await sameFile(d,fn,buf))?fn:await freeName(d,fn.replace(/\.pdf$/i,''),null);
-  if(name!==fn||!(await sameFile(d,fn,buf)))await writeVerified(d,name,buf);
+  if(!(await archPerm(bakRoot,ask)))throw Object.assign(new Error('permesso della cartella backup da confermare'),{code:'perm',name:'NotAllowedError'});
+  const d=await bakDir(parts),want=BAK_PRE+fn;
+  if(await sameFile(d,want,buf))return want;
+  const name=await freeName(d,want.replace(/\.pdf$/i,''),mine?BAK_PRE+mine:null);
+  await writeVerified(d,name,buf);
   return name;
 }
 /* ---- copie interne (cassaforte) ---- */
@@ -1457,7 +1468,7 @@ async function vaultRetry(ask){
           v.net=true;v.fn=fn;v.rel=DIR_PDF+'/'+parts.join('/')+'/'+fn;v.netTs=Date.now();markSheetArchived(v);
         }catch(e){errs.push(v.fn+': '+errTxt(e));}
       }
-      if(v.bak===false&&bakRoot){try{await bakWrite(parts,v.fn,buf,ask);v.bak=true;}catch(e){errs.push('seconda cartella: '+errTxt(e));}}
+      if(v.bak===false&&bakOn()){try{await bakWrite(parts,v.fn,buf,ask);v.bak=true;}catch(e){errs.push('cartella backup: '+errTxt(e));}}
       await vault.put(v);
       if(v.net&&v.bak!==false)saved++;else left++;
     }
@@ -1496,19 +1507,19 @@ async function archiveAll(mode){
     const ts=Date.now();
     R={fn,rel:relDir+fn,pd,netOk:false,bakOk:null,vaultOk:false,size:buf.length,tries:0,errN:null,errB:null,renamed:fn!==nm+'.pdf'&&fn!==mine};
     // 1) copia interna, subito: se tutto il resto fallisce il PDF non va perso
-    const v={id:'p'+ts.toString(36)+Math.random().toString(36).slice(2,6),sheet:curId,fn,rel:R.rel,ts,size:buf.length,blob,net:false,bak:bakRoot?false:null};
+    const v={id:'p'+ts.toString(36)+Math.random().toString(36).slice(2,6),sheet:curId,fn,rel:R.rel,ts,size:buf.length,blob,net:false,bak:bakOn()?false:null};
     try{await vault.put(v);R.vaultOk=true;}catch(e){console.error('Copia interna:',e);}
     // 2) cartella di rete: scrittura + rilettura + confronto
     toast('Salvo il PDF nella cartella di rete…');
     try{const w=await writeVerified(pd,fn,buf);R.netOk=true;R.tries=w.tries;}catch(e){R.errN=e;}
     // 3) seconda cartella (doppia sicurezza)
-    if(bakRoot){toast('Salvo la copia di sicurezza…');try{await bakWrite(parts,fn,buf,true);R.bakOk=true;}catch(e){R.bakOk=false;R.errB=e;}}
-    v.net=R.netOk;v.bak=bakRoot?R.bakOk:null;if(R.netOk)v.netTs=Date.now();
+    if(bakOn()){toast('Salvo la copia nella cartella backup…');try{R.bakName=await bakWrite(parts,fn,buf,true,mine);R.bakOk=true;}catch(e){R.bakOk=false;R.errB=e;}}
+    v.net=R.netOk;v.bak=bakOn()?R.bakOk:null;if(R.netOk)v.netTs=Date.now();
     if(R.vaultOk){try{await vault.put(v);}catch(_){}}
     lastArch=R;vaultBadge();
     if(!R.netOk){
       archInfo=prev;fineUI();$('#toast').classList.remove('show');
-      const safe=[R.bakOk?'✓ copia nella seconda cartella':'',R.vaultOk?'✓ copia interna nell\'app (menu › Copie di sicurezza)':''].filter(Boolean);
+      const safe=[R.bakOk?'✓ copia nella cartella backup':'',R.vaultOk?'✓ copia interna nell\'app (menu › Copie di sicurezza)':''].filter(Boolean);
       const msg='ATTENZIONE: il PDF NON è stato salvato nella cartella di rete.\n'+errTxt(R.errN)+'\n\n'+
         (safe.length?'Il PDF però è al sicuro:\n'+safe.join('\n')+'\nAppena la cartella di rete risponde lo salvo da solo.':'Nessuna copia di sicurezza è riuscita.')+
         '\n\nVuoi scaricare anche il PDF su questo computer adesso?';
@@ -1562,7 +1573,7 @@ function fineOpen(done){
   const mi=CFG.avvisi?missing():[];
   $('#fineWarn').innerHTML=!done&&mi.length?'<div class="fwarn"><b>Mancano ancora:</b><ul>'+mi.map(x=>'<li>'+escH(x)+'</li>').join('')+'</ul>Puoi completarle ora oppure procedere comunque.</div>':'';
   const {y,m,g,nm}=archName();
-  $('#finePath').innerHTML=!CFG.archivio?'L\'archiviazione nella cartella di rete è disattivata dall\'area admin: puoi stampare o scaricare il PDF.':FSA?(archRoot?'Cartella: <b>'+escH(ARCH_SUB+' › '+DIR_PDF+' › '+y+' › '+m+' › '+g)+'</b><br>File: <b>'+escH(nm)+'.pdf</b><br>Doppia sicurezza: <b>'+escH(bakRoot?'seconda cartella «'+(bakRoot.name||'')+'» + copia interna':'copia interna nell\'app')+'</b>'
+  $('#finePath').innerHTML=!CFG.archivio?'L\'archiviazione nella cartella di rete è disattivata dall\'area admin: puoi stampare o scaricare il PDF.':FSA?(archRoot?'Cartella: <b>'+escH(ARCH_SUB+' › '+DIR_PDF+' › '+y+' › '+m+' › '+g)+'</b><br>File: <b>'+escH(nm)+'.pdf</b><br>Backup: <b>'+escH(bakOn()?'«'+BAK_PRE+nm+'.pdf» in «'+(bakRoot.name||'')+'» + copia interna':'copia interna nell\'app')+'</b>'
       :'La prima volta ti chiederò di scegliere la cartella <b>'+escH(ARCH_PATH)+'</b>.')
     :'Questo browser non può salvare nella cartella di rete: usa Chrome o Edge sul PC. Qui puoi stampare o scaricare il PDF.';
   $('#fAll').hidden=!archOn();$('#fArch').hidden=!archOn();
@@ -1574,7 +1585,7 @@ function fineOpen(done){
   if(done){const L=lastArch;
     $('#fineDone').innerHTML='✓ <b>Scheda archiviata</b>'+(done==='print'?' e inviata alla stampa':'')+'.'+
       (L?'<br><span class="mono" style="font-size:12.5px">✓ Cartella di rete: '+escH(ARCH_SUB+'\\'+L.rel.replace(/\//g,'\\'))+' ('+kb(L.size)+', riletto e identico)<br>'+
-        (L.bakOk===true?'✓ Seconda cartella: copia salvata e verificata':L.bakOk===false?'✗ Seconda cartella non riuscita ('+escH(errTxt(L.errB))+'): riprovo da solo':'– Seconda cartella non impostata')+'<br>'+
+        (L.bakOk===true?'✓ Cartella backup: «'+escH(L.bakName||'')+'» salvata e verificata':L.bakOk===false?'✗ Cartella backup non riuscita ('+escH(errTxt(L.errB))+'): riprovo da solo':'– Cartella backup non attiva')+'<br>'+
         (L.vaultOk?'✓ Copia interna nell\'app':'✗ Copia interna non riuscita')+'</span>'+
         (L.renamed?'<div class="mhint">Esisteva già un PDF con lo stesso nome di un\'altra scheda: questo è stato salvato come «'+escH(L.fn)+'».</div>':'')+
         '<div class="mrow" style="margin-top:8px"><button class="btn" type="button" id="fOpenPdf">Apri il PDF salvato</button></div>':'')+
@@ -1650,7 +1661,7 @@ $('#aList').addEventListener('click',async e=>{
 $('#bArchList').addEventListener('click',archOpenList);
 $('#bTestArch').addEventListener('click',async()=>{
   const out=$('#testOut');out.style.display='block';const L=[];const log=t=>{L.push(t);out.textContent=L.join('\n');};
-  log('Versione: v2026.11.18-b  ·  Browser: '+(navigator.userAgentData?navigator.userAgentData.brands.map(b=>b.brand+' '+b.version).filter(x=>!/Not/.test(x)).join(', '):navigator.userAgent));
+  log('Versione: v2026.11.20-a  ·  Browser: '+(navigator.userAgentData?navigator.userAgentData.brands.map(b=>b.brand+' '+b.version).filter(x=>!/Not/.test(x)).join(', '):navigator.userAgent));
   if(!FSA){log('✗ Questo browser non può salvare in cartella (serve Chrome o Edge).');return;}
   if(!archRoot){log('✗ Nessuna cartella scelta: premi «Scegli cartella».');return;}
   try{
@@ -1667,8 +1678,9 @@ $('#bTestArch').addEventListener('click',async()=>{
     log('Attendo 4 secondi e ricontrollo…');await new Promise(r=>setTimeout(r,4000));
     for(const n of ['prova-piccolo.pdf','prova-scheda.pdf']){try{const f=await (await td.getFileHandle(n)).getFile();log('  '+n+': ✓ presente ('+kb(f.size)+')');}catch(e){log('  '+n+': ✗ assente ('+errTxt(e)+')');}}
     try{await base.removeEntry('_prova',{recursive:true});log('File di prova eliminati.');}catch(e){log('(Non riesco a eliminare la cartella _prova: puoi cancellarla a mano.)');}
-    if(bakRoot){try{const n=await bakWrite(['_prova'],'prova-copia.pdf',new Uint8Array(await tiny.arrayBuffer()),true);log('Seconda cartella «'+bakRoot.name+'»: ✓ salvataggio verificato');try{await (await bakRoot.getDirectoryHandle(DIR_PDF)).removeEntry('_prova',{recursive:true});}catch(_){}}catch(e){log('Seconda cartella: ✗ '+errTxt(e));}}
-    else log('Seconda cartella: non impostata (resta la copia interna).');
+    if(bakOn()){try{await bakWrite(['_prova'],'prova.pdf',new Uint8Array(await tiny.arrayBuffer()),true);log('Cartella backup «'+bakRoot.name+'»: ✓ copia salvata e verificata');try{const b=bakIsSub(bakRoot)?bakRoot:await bakRoot.getDirectoryHandle(BAK_SUB);await b.removeEntry('_prova',{recursive:true});}catch(_){}}catch(e){log('Cartella backup: ✗ '+errTxt(e));}}
+    else log('Cartella backup: '+(bakRoot?'disattivata dall\'area admin':'non scelta')+' (resta la copia interna).');
+    try{const L=await legacyFind();log(L?'Cartella vecchia «'+LEGACY+'» trovata: usa «Recupera PDF dalla cartella vecchia».':'Cartelle create da versioni vecchie: nessuna ✓');}catch(_){}
     try{const t='t'+Date.now();await vault.put({id:t,fn:'prova',rel:'x',ts:0,size:1,blob:tiny,net:true,bak:null});await vault.del(t);log('Copia interna nell\'app: ✓ funziona');}catch(e){log('Copia interna nell\'app: ✗ '+errTxt(e));}
   }catch(e){log('✗ Errore: '+errTxt(e));}
 });
@@ -1781,6 +1793,7 @@ const TOG=[
   ['stampaAuto','Stampa insieme all\'archiviazione','Il pulsante principale di Fine scheda archivia e apre subito la stampa. Se spenta: archivia soltanto.'],
   ['numAuto','Numero scheda automatico','Nella nuova scheda propone il numero successivo all\'ultimo archiviato (resta modificabile).'],
   ['avvisi','Avviso campi mancanti','Fine scheda elenca numero, data, Falco, equipaggio e codici non compilati.'],
+  ['backup','Copia nella cartella backup','Ogni scheda salvata va anche nella cartella backup con il nome «Copia …». La cartella si sceglie più sotto.'],
   ['verificaPdf','Secondo controllo del PDF','Pochi secondi dopo il salvataggio rilegge il PDF dalla cartella di rete e controlla che sia ancora identico.'],
   ['nomiAuto','Suggerimenti nomi e frecce','Elenco nomi per INF, AUT, MED e Falco mentre scrivi.'],
   ['frasi','Frasi rapide','Barra di frasi pronte mentre scrivi le Valutazioni sul posto.']];
@@ -1919,13 +1932,66 @@ $('#bVault').addEventListener('click',()=>{barSet(false);vaultOpen();});
 $('#bBakPick').addEventListener('click',async()=>{
   try{const h=await window.showDirectoryPicker({id:'scheda118bak',mode:'readwrite',startIn:'documents'});
     if(!(await archPerm(h,true)))throw Object.assign(new Error('perm'),{code:'perm'});
-    if(archRoot&&typeof h.isSameEntry==='function'&&await h.isSameEntry(archRoot)){alert('La seconda cartella deve essere diversa dalla cartella di rete: scegline un\'altra (meglio sul disco di questo PC).');return;}
-    bakRoot=h;try{await idb.set('bakRoot',h);}catch(_){}archUI();toast('Seconda cartella impostata: '+(h.name||''),2600);vaultRetry(false);
+    // non deve stare dentro l'archivio principale: se qualcuno lo cancella, sparirebbe anche il backup
+    if(archRoot){let base=null;try{base=await archDir(false);}catch(_){}
+      for(const a of [archRoot,base].filter(Boolean)){
+        let inside=false;try{inside=(typeof h.isSameEntry==='function'&&await h.isSameEntry(a))||(typeof a.resolve==='function'&&(await a.resolve(h))!==null);}catch(_){}
+        if(inside&&(a===base||isSubRoot())){alert('La cartella backup non può stare dentro «'+ARCH_SUB+'»: se qualcuno cancellasse la cartella delle schede, sparirebbe anche il backup.\n\nScegli (o crea) una cartella fuori, per esempio «Pronto Soccorso\\118 Backup».');return;}}}
+    bakRoot=h;try{await idb.set('bakRoot',h);}catch(_){}
+    if(!CFG.backup){CFG.backup=true;saveCfg();fillAdmin();}
+    archUI();toast('Cartella backup: '+(h.name||'')+(bakIsSub(h)?'':' › '+BAK_SUB),2800);vaultRetry(false);
   }catch(e){if(e&&e.name==='AbortError')return;alert(archErr(e));}
 });
-$('#bBakOff').addEventListener('click',async()=>{if(!confirm('Non usare più la seconda cartella?\nResterà la copia interna nell\'app.'))return;bakRoot=null;try{await idb.set('bakRoot',null);}catch(_){}archUI();});
+$('#bBakOff').addEventListener('click',async()=>{if(!confirm('Togliere la cartella backup?\nLe copie già salvate restano dove sono; da ora resta solo la copia interna nell\'app.'))return;bakRoot=null;try{await idb.set('bakRoot',null);}catch(_){}archUI();});
+
+/* ---- cartella creata da versioni vecchie («Scheda 118 Digitale» con PDF e JSON) ---- */
+const LEGACY='Scheda 118 Digitale';
+async function legacyFind(){
+  if(!FSA||!archRoot||!(await archPerm(archRoot,false)))return null;
+  let base=null;try{base=await archDir(false);}catch(_){}
+  for(const d of [base,isSubRoot()?null:archRoot].filter(Boolean)){
+    if(normS(d.name)===normS(LEGACY))continue;
+    try{const h=await d.getDirectoryHandle(LEGACY);const pdf=await h.getDirectoryHandle(DIR_PDF).catch(()=>null);if(pdf)return{h,pdf,base};}catch(_){}
+  }
+  return null;
+}
+async function legacyUI(){
+  let L=null;try{L=await legacyFind();}catch(_){}
+  $('#hLegacy').hidden=!L;$('#legRow').hidden=!L;
+  const done=!!store.get('scheda118_legacy_ok');
+  if(L){$('#hLegacy').textContent=done?'La cartella vecchia «'+LEGACY+'» è ancora lì: i PDF sono già copiati, puoi cancellarla (tocca per ricontrollare)':'⚠ Trovata la cartella vecchia «'+LEGACY+'»: tocca per copiare i suoi PDF nell\'archivio giusto';$('#legInfo').textContent='creata da una versione vecchia della scheda';}
+}
+async function legacyCopy(){
+  if(busy)return;
+  if(!archRoot||!(await archPerm(archRoot,true))){needSetup(true);return;}
+  const L=await legacyFind();if(!L){alert('Nessuna cartella vecchia da recuperare.');legacyUI();return;}
+  if(!confirm('Nella cartella delle schede c\'è «'+LEGACY+'», creata da una versione vecchia della scheda (contiene PDF e file JSON).\n\nCopio tutti i suoi PDF in «'+ARCH_SUB+' › '+DIR_PDF+'», nelle stesse cartelle anno › mese › giorno, verificandoli uno per uno. La cartella vecchia NON viene cancellata.\n\nProcedo?'))return;
+  busy=true;let copied=0,same=0,renamed=0;const errs=[];
+  try{
+    const walk=async(dir,parts)=>{for await(const [n,x] of dir.entries()){
+      if(x.kind==='directory'){if(parts.length<3)await walk(x,parts.concat(n));continue;}
+      if(!/\.pdf$/i.test(n))continue;
+      try{const buf=new Uint8Array(await (await x.getFile()).arrayBuffer());
+        const dst=await dirPath(L.base,[DIR_PDF].concat(parts),true);
+        if(await sameFile(dst,n,buf)){same++;continue;}
+        const fn=await freeName(dst,n.replace(/\.pdf$/i,''),null);
+        await writeVerified(dst,fn,buf);copied++;if(fn!==n)renamed++;
+        if(bakOn()){try{await bakWrite(parts,fn,buf,false);}catch(_){}}
+        toast('Recupero PDF… '+copied+' copiati',1200);
+      }catch(e){errs.push(parts.join('/')+'/'+n+': '+errTxt(e));}
+    }};
+    await walk(L.pdf,[]);
+  }catch(e){errs.push(errTxt(e));}
+  finally{busy=false;}
+  if(!errs.length)store.set('scheda118_legacy_ok',String(Date.now()));
+  alert('Recupero dalla cartella vecchia completato.\n\n✓ PDF copiati: '+copied+(renamed?' (di cui '+renamed+' con «(2)» nel nome perché esisteva già un file diverso)':'')+'\n✓ Già presenti e identici: '+same+(errs.length?'\n✗ Non riusciti: '+errs.length+'\n'+errs.slice(0,5).join('\n'):'')+
+    (errs.length?'':'\n\nOra puoi cancellare a mano la cartella «'+LEGACY+'» (contiene anche i vecchi file JSON con dati dei pazienti).'));
+  legacyUI();
+}
+$('#hLegacy').addEventListener('click',legacyCopy);
+$('#bLegacy').addEventListener('click',legacyCopy);
 // le copie in sospeso si salvano da sole: all'avvio, quando torna la rete e ogni 5 minuti
-archReady.then(()=>{vaultPrune().then(()=>vaultRetry(false));});
+archReady.then(()=>{vaultPrune().then(()=>vaultRetry(false));legacyUI();});
 window.addEventListener('online',()=>setTimeout(()=>vaultRetry(false),2000));
 setInterval(()=>vaultRetry(false),300000);
 
