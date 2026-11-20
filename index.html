@@ -358,7 +358,7 @@ body.home .dock.has .dlabel{display:block}
 
 <div class="bar" id="bar">
   <button class="tog" type="button" id="barTog" aria-expanded="false" aria-controls="bar"><span class="bdg"></span>Menu<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-  <div class="t"><i></i>Scheda di Intervento 118 <span style="font-weight:600;font-size:11px;color:var(--muted)">v2026.11.20-a</span></div>
+  <div class="t"><i></i>Scheda di Intervento 118 <span style="font-weight:600;font-size:11px;color:var(--muted)">v2026.11.20-b</span></div>
   <span class="st sheetonly" id="st">—</span>
   <button class="btn" type="button" id="bHome" title="Riduci la scheda e torna alla schermata iniziale">⌂ <span class="tx">Home</span></button>
   <button class="btn" type="button" id="bNew" title="Nuova scheda (quella aperta resta in basso, ridotta a icona)">＋ <span class="tx">Nuova</span></button>
@@ -536,7 +536,7 @@ body.home .dock.has .dlabel{display:block}
   </button>
   <button class="hpend" type="button" id="hPend" hidden></button>
   <button class="hpend" type="button" id="hLegacy" hidden></button>
-  <div class="hver">v2026.11.20-a</div>
+  <div class="hver">v2026.11.20-b</div>
   <div class="hbooks">
     <button class="hbook" type="button" id="hAlg"><span class="bi alg"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="2.5" width="8" height="5" rx="1.2"/><rect x="2.5" y="16.5" width="8" height="5" rx="1.2"/><rect x="13.5" y="16.5" width="8" height="5" rx="1.2"/><path d="M12 7.5V12M6.5 16.5V12h11v4.5"/></svg></span><span>Algoritmi<br>infermieristici<small>Flow chart PR-UO PS 06</small></span></button>
     <button class="hbook" type="button" id="hPed"><span class="bi ped"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.2" fill="#fff" stroke="#15181d" stroke-width="1.4"/><rect x="5.7" y="5" width="12.6" height="2.2" fill="#9e9e9e"/><rect x="5.7" y="7.2" width="12.6" height="2.2" fill="#ff8fcf"/><rect x="5.7" y="9.4" width="12.6" height="2.2" fill="#e30613"/><rect x="5.7" y="11.6" width="12.6" height="2.2" fill="#ffd400"/><rect x="5.7" y="13.8" width="12.6" height="2.2" fill="#0a8de0"/><rect x="5.7" y="16" width="12.6" height="2.2" fill="#1fbf3a"/></svg></span><span>PEDICards<small>Dosi pediatriche per peso</small></span></button>
@@ -816,7 +816,7 @@ if(cfgOld||!Array.isArray(CFG.frasiCat)){   // passaggio dalla vecchia lista uni
 }
 delete CFG.frasiList;
 const saveCfg=()=>store.set(CFGKEY,JSON.stringify(CFG));
-if(CFG.pwv!==3){CFG.pw=null;CFG.pwv=3;saveCfg();}   // password admin riportata a quella predefinita
+if(CFG.pwv!==4){CFG.pw=null;CFG.pwv=4;saveCfg();}   // password admin riportata a quella predefinita
 delete CFG.nuovaAvvio;
 
 /* ============ FIRMA (tratti vettoriali) ============ */
@@ -1661,7 +1661,7 @@ $('#aList').addEventListener('click',async e=>{
 $('#bArchList').addEventListener('click',archOpenList);
 $('#bTestArch').addEventListener('click',async()=>{
   const out=$('#testOut');out.style.display='block';const L=[];const log=t=>{L.push(t);out.textContent=L.join('\n');};
-  log('Versione: v2026.11.20-a  ·  Browser: '+(navigator.userAgentData?navigator.userAgentData.brands.map(b=>b.brand+' '+b.version).filter(x=>!/Not/.test(x)).join(', '):navigator.userAgent));
+  log('Versione: v2026.11.20-b  ·  Browser: '+(navigator.userAgentData?navigator.userAgentData.brands.map(b=>b.brand+' '+b.version).filter(x=>!/Not/.test(x)).join(', '):navigator.userAgent));
   if(!FSA){log('✗ Questo browser non può salvare in cartella (serve Chrome o Edge).');return;}
   if(!archRoot){log('✗ Nessuna cartella scelta: premi «Scegli cartella».');return;}
   try{
@@ -1787,7 +1787,7 @@ frasiRender();
 /* ---- area admin ---- */
 let adminOn=false;
 async function sha(t){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');}catch(_){return 'plain:'+t;}}
-async function pwOk(t){const h=await sha(t);if(CFG.pw)return h===CFG.pw;return t==='coord';}
+async function pwOk(t){const h=await sha(t);if(CFG.pw)return h===CFG.pw;const v=String(t).trim().toLowerCase().replace(/^\(+|\)+$/g,'').trim().replace(/\.+$/,'');return v==='coord';}   // vale «coord», anche scritto «coord.» o «(coord.)»
 const TOG=[
   ['archivio','Archiviazione nella cartella di rete','Con «Fine scheda» salva il PDF in 118 Scheda Digitale, lo verifica e ne tiene una copia di sicurezza. Se spenta: solo stampa e PDF.'],
   ['stampaAuto','Stampa insieme all\'archiviazione','Il pulsante principale di Fine scheda archivia e apre subito la stampa. Se spenta: archivia soltanto.'],
@@ -1834,7 +1834,7 @@ $('#bPwSet').addEventListener('click',async()=>{
 });
 $('#bCfgReset').addEventListener('click',()=>{
   if(!confirm('Ripristinare tutte le funzioni e le frasi rapide predefinite?\n(La password resta quella attuale.)'))return;
-  const pw=CFG.pw;CFG=JSON.parse(JSON.stringify(CFG_DEF));CFG.pw=pw;CFG.pwv=3;applyCfg();fillAdmin();toast('Impostazioni predefinite ripristinate',2200);
+  const pw=CFG.pw;CFG=JSON.parse(JSON.stringify(CFG_DEF));CFG.pw=pw;CFG.pwv=4;applyCfg();fillAdmin();toast('Impostazioni predefinite ripristinate',2200);
 });
 applyCfg();
 
