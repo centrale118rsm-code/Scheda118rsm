@@ -412,7 +412,7 @@ body.home .dock.has .dlabel{display:block}
 
 <div class="bar" id="bar">
   <button class="tog" type="button" id="barTog" aria-expanded="false" aria-controls="bar"><span class="bdg"></span>Menu<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-  <div class="t"><i></i>Scheda di Intervento 118 <span style="font-weight:600;font-size:11px;color:var(--muted)">v2026.11.20-e</span></div>
+  <div class="t"><i></i>Scheda di Intervento 118 <span style="font-weight:600;font-size:11px;color:var(--muted)">v2026.11.20-f</span></div>
   <span class="st sheetonly" id="st">—</span>
   <button class="btn" type="button" id="bHome" title="Riduci la scheda e torna alla schermata iniziale">⌂ <span class="tx">Home</span></button>
   <button class="btn" type="button" id="bNew" title="Nuova scheda (quella aperta resta in basso, ridotta a icona)">＋ <span class="tx">Nuova</span></button>
@@ -624,7 +624,7 @@ body.home .dock.has .dlabel{display:block}
       </div>
     </section>
   </main>
-  <footer class="hfoot"><span>I dati dei pazienti restano su questo computer e nella cartella di rete ISS: nessun invio su internet.</span><span class="hver">v2026.11.20-e</span></footer>
+  <footer class="hfoot"><span>I dati dei pazienti restano su questo computer e nella cartella di rete ISS: nessun invio su internet.</span><span class="hver">v2026.11.20-f</span></footer>
 </div>
 <div class="dock" id="dock">
   <button class="minbtn" type="button" id="bMin" title="Riduci la scheda a icona e torna alla schermata iniziale"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19h14"/><path d="M12 4v10m-4-4 4 4 4-4"/></svg><span>Riduci a icona</span></button>
@@ -1383,12 +1383,23 @@ $('#bSync').addEventListener('click',async()=>{
 const ARCH_PATH='\\\\dati.iss.local\\Pronto Soccorso\\118 Scheda Digitale',ARCH_SUB='118 Scheda Digitale';
 const FSA=typeof window.showDirectoryPicker==='function';
 const MESI_N=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+// memoria del browser (cartelle scelte e copie interne). Se un'altra finestra con una versione vecchia la tiene bloccata,
+// l'app non resta mai in attesa: avvisa e continua a lavorare.
+let idbBlocked=false,idbWarned=false;
+const withT=(pr,ms)=>Promise.race([pr,new Promise((_,ko)=>setTimeout(()=>ko(Object.assign(new Error('memoria del browser bloccata da un\'altra finestra della Scheda 118'),{name:'IdbBlocked'})),ms))]);
+function idbWarn(){
+  idbBlocked=true;try{archUI();}catch(_){}
+  if(idbWarned)return;idbWarned=true;
+  setTimeout(()=>alert('ATTENZIONE: la Scheda 118 è aperta anche in un\'altra finestra o scheda del browser con una versione precedente, e blocca la memoria di questo computer.\n\nChiudi TUTTE le finestre e le schede della Scheda 118 (anche l\'app installata), poi riaprila.\n\nFinché non lo fai la cartella di archivio non viene ricordata: se la scegli ora vale solo per questa finestra.'),300);
+}
 const idb={p:null,
   open(){return this.p||(this.p=new Promise((ok,ko)=>{const r=indexedDB.open('scheda118',2);
     r.onupgradeneeded=()=>{const db=r.result;if(!db.objectStoreNames.contains('kv'))db.createObjectStore('kv');if(!db.objectStoreNames.contains('pdf'))db.createObjectStore('pdf',{keyPath:'id'});};
-    r.onsuccess=()=>ok(r.result);r.onerror=()=>ko(r.error);}));},
-  async get(k){const db=await this.open();return new Promise((ok,ko)=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>ok(q.result);q.onerror=()=>ko(q.error);});},
-  async set(k,v){const db=await this.open();return new Promise((ok,ko)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>ok();t.onerror=()=>ko(t.error);});}};
+    r.onblocked=()=>idbWarn();
+    r.onsuccess=()=>{const db=r.result;db.onversionchange=()=>{db.close();idb.p=null;};if(idbBlocked){idbBlocked=false;try{archLoad();}catch(_){}}ok(db);};
+    r.onerror=()=>{idb.p=null;ko(r.error);};}));},
+  get(k){return withT(this.open().then(db=>new Promise((ok,ko)=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>ok(q.result);q.onerror=()=>ko(q.error);})),4000);},
+  set(k,v){return withT(this.open().then(db=>new Promise((ok,ko)=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>ok();t.onerror=()=>ko(t.error);})),4000);}};
 let archRoot=null,bakRoot=null,archPending=false;
 const BAK_SUB='118 Backup Schede',BAK_PRE='Copia ';
 const bakOn=()=>!!(FSA&&CFG.archivio&&CFG.backup&&bakRoot);
@@ -1404,6 +1415,7 @@ function archUI(){
   $('#archCard').classList.toggle('ok',!!archRoot);
   $('#archState').textContent=archRoot?'Cartella archivio: '+(isSubRoot()?'… › ':(archRoot.name||'cartella scelta')+' › ')+ARCH_SUB:'Cartella archivio non ancora scelta';
   $('#bArchPick').textContent=archRoot?'Cambia cartella':'Scegli cartella';
+  if(idbBlocked&&!archRoot)$('#archState').textContent='Memoria del browser bloccata: chiudi tutte le altre finestre della Scheda 118 e riapri';
 }
 async function archLoad(){if(FSA){try{archRoot=(await idb.get('archRoot'))||null;}catch(_){archRoot=null;}try{bakRoot=(await idb.get('bakRoot'))||null;}catch(_){bakRoot=null;}}archUI();}
 async function archPerm(h,ask){
@@ -1422,8 +1434,8 @@ $('#bArchPick').addEventListener('click',async()=>{
   try{
     const h=await window.showDirectoryPicker({id:'scheda118',mode:'readwrite'});
     if(!(await archPerm(h,true)))throw Object.assign(new Error('perm'),{code:'perm'});
-    archRoot=h;try{await idb.set('archRoot',h);}catch(_){}
-    archUI();toast('Cartella impostata: '+(h.name||''),2500);
+    archRoot=h;let kept=true;try{await idb.set('archRoot',h);}catch(_){kept=false;}
+    archUI();toast(kept?'Cartella impostata: '+(h.name||''):'Cartella impostata solo per questa finestra (memoria bloccata da un\'altra finestra)',kept?2500:5000);
     if(archPending){const m=archPending;archPending=false;closeMod();
       setTimeout(()=>{if(m==='all'||m==='arch')fineRun(m);else if(m==='list')archOpenList();else fineOpen(false);},150);}
   }catch(e){if(e&&e.name==='AbortError')return;alert(archErr(e));}
@@ -1520,7 +1532,8 @@ async function bakWrite(parts,fn,buf,ask,mine){
 /* ---- copie interne (cassaforte) ---- */
 const VDAYS=60;
 const vault={
-  async tx(mode,fn){const db=await idb.open();return new Promise((ok,ko)=>{const t=db.transaction('pdf',mode),st=t.objectStore('pdf');let res;const q=fn(st);if(q)q.onsuccess=()=>{res=q.result;};t.oncomplete=()=>ok(res);t.onerror=()=>ko(t.error);t.onabort=()=>ko(t.error);});},
+  tx(mode,fn){return withT(this._tx(mode,fn),6000);},
+  async _tx(mode,fn){const db=await idb.open();return new Promise((ok,ko)=>{const t=db.transaction('pdf',mode),st=t.objectStore('pdf');let res;const q=fn(st);if(q)q.onsuccess=()=>{res=q.result;};t.oncomplete=()=>ok(res);t.onerror=()=>ko(t.error);t.onabort=()=>ko(t.error);});},
   all(){return this.tx('readonly',st=>st.getAll()).then(r=>r||[]);},
   put(v){return this.tx('readwrite',st=>st.put(v));},
   get(id){return this.tx('readonly',st=>st.get(id));},
@@ -1746,7 +1759,7 @@ $('#aList').addEventListener('click',async e=>{
 $('#bArchList').addEventListener('click',archOpenList);
 $('#bTestArch').addEventListener('click',async()=>{
   const out=$('#testOut');out.style.display='block';const L=[];const log=t=>{L.push(t);out.textContent=L.join('\n');};
-  log('Versione: v2026.11.20-e  ·  Browser: '+(navigator.userAgentData?navigator.userAgentData.brands.map(b=>b.brand+' '+b.version).filter(x=>!/Not/.test(x)).join(', '):navigator.userAgent));
+  log('Versione: v2026.11.20-f  ·  Browser: '+(navigator.userAgentData?navigator.userAgentData.brands.map(b=>b.brand+' '+b.version).filter(x=>!/Not/.test(x)).join(', '):navigator.userAgent));
   if(!FSA){log('✗ Questo browser non può salvare in cartella (serve Chrome o Edge).');return;}
   if(!archRoot){log('✗ Nessuna cartella scelta: premi «Scegli cartella».');return;}
   try{
